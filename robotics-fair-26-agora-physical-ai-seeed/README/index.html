@@ -211,6 +211,14 @@
       background: linear-gradient(90deg, var(--cyan), var(--sun), var(--coral));
     }
 
+    @media (min-width: 1181px) {
+      .markdown-body h1 {
+        max-width: none;
+        font-size: clamp(2.65rem, 3.5vw, 3.15rem);
+        white-space: nowrap;
+      }
+    }
+
     .markdown-body h2 {
       margin: 54px 0 16px;
       padding-top: 16px;
