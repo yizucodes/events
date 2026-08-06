@@ -1,0 +1,4646 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Give the Body a Brain | Robotics Fair 2026</title>
+  <meta name="description" content="A six-slide workshop deck for building a voice-based physical AI companion with Agora Bot Station and the Seeed Studio ReSpeaker Flex.">
+  <script>
+    (function () {
+      function detectWorkshopScreen() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const ratio = width / Math.max(height, 1);
+
+        if (width <= 640 || (height <= 480 && width <= 960)) return "phone";
+        if (width <= 1180 && ratio < 1.45) return "ipad";
+        if ((height <= 820 && ratio >= 1.65) || ratio >= 1.9) return "short-wide";
+        return "regular";
+      }
+
+      document.documentElement.dataset.screen = detectWorkshopScreen();
+      window.detectWorkshopScreen = detectWorkshopScreen;
+    })();
+  </script>
+  <style>
+    :root {
+      --ink: #111b18;
+      --ink-soft: #2f403b;
+      --paper: #fff7e5;
+      --paper-2: #f2dfba;
+      --cyan: #00aeef;
+      --cyan-deep: #057eaa;
+      --ember: #f25d2b;
+      --sun: #f6b73c;
+      --moss: #596f2c;
+      --cream: rgba(255, 250, 238, 0.88);
+      --line: rgba(17, 27, 24, 0.16);
+      --shadow: 0 28px 80px rgba(48, 34, 14, 0.22);
+      --radius-xl: 36px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --max: 1360px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    html {
+      scroll-behavior: auto;
+      scroll-snap-type: y mandatory;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 9% 14%, rgba(0, 174, 239, 0.24), transparent 28rem),
+        radial-gradient(circle at 84% 6%, rgba(242, 93, 43, 0.22), transparent 25rem),
+        linear-gradient(135deg, #fff6df 0%, #ecd1a1 46%, #cda06c 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(17, 27, 24, 0.075) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 27, 24, 0.075) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.12));
+    }
+
+    a {
+      color: inherit;
+      text-decoration-thickness: 0.12em;
+      text-underline-offset: 0.18em;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .deck {
+      position: relative;
+    }
+
+    .slide {
+      position: relative;
+      height: 100vh;
+      height: 100svh;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      padding: clamp(62px, 7vh, 92px) clamp(18px, 5vw, 72px) clamp(46px, 6vh, 70px);
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .slide::before,
+    .slide::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .slide::before {
+      width: 34vw;
+      max-width: 520px;
+      min-width: 260px;
+      aspect-ratio: 1;
+      right: -10vw;
+      top: -12vw;
+      border: 2px solid rgba(17, 27, 24, 0.12);
+      border-radius: 42% 58% 48% 52%;
+      animation: floatBlob 13s ease-in-out infinite;
+    }
+
+    .slide::after {
+      width: 18vw;
+      max-width: 260px;
+      min-width: 140px;
+      aspect-ratio: 1;
+      left: -6vw;
+      bottom: -8vw;
+      border-radius: 36px;
+      background: repeating-linear-gradient(135deg, rgba(0, 174, 239, 0.11), rgba(0, 174, 239, 0.11) 9px, transparent 9px, transparent 18px);
+      transform: rotate(18deg);
+    }
+
+    .slide-inner {
+      width: min(var(--max), 100%);
+      margin: 0 auto;
+    }
+
+    .slide-logo {
+      position: absolute;
+      top: clamp(18px, 3vw, 34px);
+      left: clamp(18px, 4vw, 54px);
+      width: clamp(82px, 10vw, 126px);
+      height: auto;
+      z-index: 4;
+      filter: drop-shadow(0 10px 22px rgba(0, 174, 239, 0.18));
+    }
+
+    .slide-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 238, 0.68);
+      color: var(--cyan-deep);
+      font-size: clamp(0.72rem, 1vw, 0.86rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+    }
+
+    .slide-kicker::before {
+      content: "";
+      flex: 0 0 42px;
+      width: 42px;
+      height: 9px;
+      background:
+        radial-gradient(circle at 4.5px 50%, var(--ember) 0 4.5px, transparent 5px),
+        radial-gradient(circle at 20.5px 50%, var(--sun) 0 4.5px, transparent 5px),
+        radial-gradient(circle at 36.5px 50%, var(--cyan) 0 4.5px, transparent 5px);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+    }
+
+    h1 {
+      max-width: 940px;
+      font-size: clamp(3rem, min(6vw, 10vh), 6.8rem);
+    }
+
+    .hero-title span {
+      display: inline;
+    }
+
+    @media (min-width: 1181px) {
+      .hero-title {
+        max-width: none;
+        font-size: clamp(3.25rem, min(3.55vw, 8vh), 4.1rem);
+      }
+
+      .hero-title span {
+        display: block;
+        white-space: nowrap;
+      }
+
+      #intro .split {
+        grid-template-columns: minmax(0, 1.36fr) minmax(360px, 0.64fr);
+        gap: clamp(28px, 3vw, 46px);
+      }
+
+      #intro .split > * {
+        min-width: 0;
+      }
+    }
+
+    h2 {
+      max-width: 860px;
+      font-size: clamp(2.55rem, min(5.2vw, 9vh), 5.4rem);
+    }
+
+    h3 {
+      font-size: clamp(1.34rem, 2.45vw, 2rem);
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin-top: 18px;
+      color: var(--ink-soft);
+      font-size: clamp(1rem, min(1.45vw, 2.4vh), 1.24rem);
+      line-height: 1.46;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 18px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      color: var(--ink);
+      background: rgba(255, 250, 238, 0.68);
+      font-size: 0.96rem;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 0 10px 28px rgba(48, 34, 14, 0.1);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .button.primary {
+      color: #fff8e8;
+      background: var(--ink);
+      box-shadow: 7px 7px 0 var(--cyan);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translate(-2px, -2px);
+      box-shadow: 9px 9px 0 rgba(242, 93, 43, 0.72);
+    }
+
+    .button.console-button:hover,
+    .button.console-button:focus-visible {
+      box-shadow: 9px 9px 0 rgba(0, 174, 239, 0.78);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: clamp(24px, 5vw, 58px);
+      align-items: center;
+    }
+
+    .split.wide-visual {
+      grid-template-columns: minmax(340px, 0.9fr) minmax(0, 1.1fr);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--cream);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .panel-pad {
+      padding: clamp(18px, 3vw, 30px);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 250, 238, 0.74);
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: clamp(1.35rem, 2vw, 1.8rem);
+      line-height: 1;
+    }
+
+    .metric span {
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .voice-orbit {
+      position: relative;
+      display: grid;
+      min-height: min(52vh, 500px);
+      place-items: center;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.82), transparent 24%),
+        linear-gradient(150deg, rgba(0, 174, 239, 0.18), rgba(246, 183, 60, 0.25));
+    }
+
+    .voice-orbit::before {
+      content: "";
+      position: absolute;
+      width: 78%;
+      aspect-ratio: 1;
+      border: 2px dashed rgba(17, 27, 24, 0.24);
+      border-radius: 50%;
+      animation: spin 26s linear infinite;
+    }
+
+    .voice-orbit::after {
+      content: "";
+      position: absolute;
+      width: 58%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(0, 174, 239, 0.36);
+      border-radius: 50%;
+      animation: spin 18s linear infinite reverse;
+    }
+
+    .voice-core {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: clamp(140px, 16vw, 210px);
+      aspect-ratio: 1;
+      place-items: center;
+      border: 10px solid rgba(255, 250, 238, 0.86);
+      border-radius: 42px;
+      background: linear-gradient(145deg, var(--cyan), var(--cyan-deep));
+      box-shadow: 0 30px 64px rgba(5, 126, 170, 0.28);
+      transform: rotate(-20deg);
+    }
+
+    .bars {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 94px;
+      transform: rotate(20deg);
+    }
+
+    .bars span {
+      width: 11px;
+      border-radius: 99px;
+      background: #fff8e8;
+      animation: pulse 820ms ease-in-out infinite alternate;
+    }
+
+    .bars span:nth-child(1) { height: 30px; animation-delay: 0ms; }
+    .bars span:nth-child(2) { height: 58px; animation-delay: 110ms; }
+    .bars span:nth-child(3) { height: 86px; animation-delay: 220ms; }
+    .bars span:nth-child(4) { height: 48px; animation-delay: 330ms; }
+    .bars span:nth-child(5) { height: 68px; animation-delay: 440ms; }
+
+    .pill-list,
+    .big-list {
+      display: grid;
+      gap: 12px;
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .pill-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pill-list li,
+    .big-list li {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 250, 238, 0.74);
+      color: var(--ink-soft);
+      font-weight: 800;
+    }
+
+    .pill-list li {
+      min-height: 58px;
+      padding: 15px 16px 15px 48px;
+    }
+
+    .pill-list li::before {
+      content: "";
+      position: absolute;
+      left: 17px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: inset 0 0 0 4px rgba(255, 250, 238, 0.72);
+      transform: translateY(-50%);
+    }
+
+    .big-list {
+      counter-reset: item;
+    }
+
+    .big-list li {
+      min-height: 62px;
+      padding: 16px 18px 16px 66px;
+    }
+
+    .big-list li::before {
+      counter-increment: item;
+      content: counter(item);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--ink);
+      color: #fff8e8;
+      font-weight: 900;
+      transform: translateY(-50%);
+    }
+
+    .image-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .pairing-images {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .media {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 250, 238, 0.82);
+      box-shadow: 0 18px 54px rgba(48, 34, 14, 0.13);
+      cursor: zoom-in;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .media:hover,
+    .media:focus-visible {
+      outline: none;
+      transform: translateY(-3px);
+      box-shadow: 0 24px 64px rgba(48, 34, 14, 0.2);
+    }
+
+    .media img {
+      width: 100%;
+      max-height: min(48vh, 500px);
+      object-fit: contain;
+      padding: 12px;
+      background: #fffaf0;
+    }
+
+    .media.compact img {
+      max-height: min(25vh, 250px);
+    }
+
+    .caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 14px 13px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    body.image-stage-open {
+      overflow: hidden;
+    }
+
+    .image-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: clamp(54px, 7vh, 84px) clamp(52px, 7vw, 120px) clamp(48px, 6vh, 72px);
+      visibility: hidden;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255, 250, 238, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 250, 238, 0.055) 1px, transparent 1px),
+        #111b18;
+      background-size: 44px 44px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 240ms ease, visibility 240ms ease;
+    }
+
+    .image-stage.is-open,
+    .image-stage.is-closing {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .image-stage.is-open {
+      opacity: 1;
+    }
+
+    .image-stage.is-closing {
+      opacity: 1;
+      transition: none;
+    }
+
+    .image-stage-logo {
+      position: absolute;
+      top: clamp(16px, 3vw, 30px);
+      left: clamp(18px, 4vw, 52px);
+      width: clamp(82px, 9vw, 118px);
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+    }
+
+    .image-stage-frame {
+      display: grid;
+      width: min(1500px, 100%);
+      max-height: calc(100svh - 112px);
+      grid-template-rows: minmax(0, 1fr) auto;
+      overflow: hidden;
+      border: 1px solid rgba(255, 250, 238, 0.22);
+      border-radius: var(--radius-md);
+      background: #fffaf0;
+      box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42);
+      transform: translateY(8vh) scale(0.84);
+      opacity: 0;
+      backface-visibility: hidden;
+    }
+
+    .image-stage.is-open .image-stage-frame {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      transition: transform 420ms cubic-bezier(0.2, 0.9, 0.25, 1.18), opacity 220ms ease;
+    }
+
+    .image-stage.is-closing .image-stage-frame {
+      transform: translateY(-5vh) scale(0.9);
+      opacity: 1;
+      transition: transform 180ms cubic-bezier(0.55, 0, 1, 0.45);
+    }
+
+    .image-stage.is-switching .image-stage-frame {
+      animation: imageJump 340ms cubic-bezier(0.2, 0.9, 0.25, 1.12);
+    }
+
+    .image-stage.is-previous.is-switching .image-stage-frame {
+      animation-name: imageJumpBack;
+    }
+
+    .image-stage-image {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: contain;
+      background: #fffaf0;
+    }
+
+    .image-stage-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 54px;
+      padding: 11px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-soft);
+      background: var(--paper);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .image-stage-caption strong {
+      color: var(--ink);
+      font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+      font-size: 1rem;
+    }
+
+    .image-stage-button {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 1px solid rgba(255, 250, 238, 0.35);
+      border-radius: 50%;
+      color: #fffaf0;
+      background: rgba(17, 27, 24, 0.72);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .image-stage-button:hover,
+    .image-stage-button:focus-visible {
+      outline: 2px solid var(--cyan);
+      color: var(--ink);
+      background: var(--cyan);
+      transform: scale(1.08);
+    }
+
+    .image-stage-close {
+      top: clamp(14px, 2.4vw, 26px);
+      right: clamp(16px, 3vw, 34px);
+    }
+
+    .image-stage-previous {
+      left: clamp(8px, 2.2vw, 30px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .image-stage-next {
+      right: clamp(8px, 2.2vw, 30px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .image-stage-previous:hover,
+    .image-stage-previous:focus-visible,
+    .image-stage-next:hover,
+    .image-stage-next:focus-visible {
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    @keyframes imageJump {
+      0% { opacity: 0; transform: translateX(7vw) scale(0.9); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    @keyframes imageJumpBack {
+      0% { opacity: 0; transform: translateX(-7vw) scale(0.9); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .button-map {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .button-card {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      color: #fff8e8;
+      background: var(--ink);
+      box-shadow: 6px 6px 0 rgba(0, 174, 239, 0.7);
+    }
+
+    .button-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+      font-size: 1.45rem;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .button-card span {
+      color: rgba(255, 248, 232, 0.82);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .config-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 250, 238, 0.74);
+    }
+
+    .config-card strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .config-card span {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .prompt-card {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 20px;
+      color: #fff8e8;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(0, 174, 239, 0.26), transparent 13rem),
+        #111b18;
+      box-shadow: 0 20px 52px rgba(17, 27, 24, 0.22);
+      font-family: "Courier New", monospace;
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    .prompt-card span {
+      display: inline-flex;
+      margin-bottom: 9px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: #ffe1a0;
+      background: rgba(246, 183, 60, 0.16);
+      font-family: "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .flash-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .flash-option {
+      position: relative;
+      display: grid;
+      min-height: 118px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px 20px;
+      align-items: end;
+      padding: 16px 18px;
+      overflow: hidden;
+      border: 1px solid rgba(17, 27, 24, 0.2);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(0, 174, 239, 0.16), transparent 38%),
+        rgba(255, 250, 238, 0.86);
+      box-shadow: 0 16px 42px rgba(48, 34, 14, 0.12);
+    }
+
+    .flash-option.app {
+      color: #fff8e8;
+      border-color: rgba(255, 250, 238, 0.2);
+      background:
+        linear-gradient(110deg, rgba(242, 93, 43, 0.32), transparent 44%),
+        var(--ink);
+    }
+
+    .flash-option-copy {
+      align-self: center;
+    }
+
+    .flash-option-topline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .flash-option h3 {
+      font-family: "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+
+    .flash-option p {
+      max-width: 520px;
+      color: var(--ink-soft);
+      font-size: 0.84rem;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .flash-option.app p {
+      color: rgba(255, 248, 232, 0.76);
+    }
+
+    .flash-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--sun);
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .flash-option.web .flash-badge {
+      color: #fff8e8;
+      background: var(--cyan-deep);
+    }
+
+    .flash-link {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 13px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      color: #fff8e8;
+      background: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .flash-option.app .flash-link {
+      color: var(--ink);
+      border-color: #fff8e8;
+      background: #fff8e8;
+    }
+
+    .flash-link:hover,
+    .flash-link:focus-visible {
+      outline: none;
+      box-shadow: 5px 5px 0 var(--cyan);
+      transform: translate(-2px, -2px);
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .timeline-step {
+      min-height: 132px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 250, 238, 0.75);
+    }
+
+    .timeline-step strong {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 12px;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff8e8;
+      background: var(--cyan-deep);
+    }
+
+    .timeline-step > span {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .code-chip {
+      display: inline-flex;
+      padding: 3px 7px;
+      border-radius: 8px;
+      color: #fff8e8;
+      background: var(--ink);
+      font-family: "Courier New", monospace;
+      font-size: 0.88em;
+      font-weight: 800;
+    }
+
+    .explore-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr) minmax(0, 1fr);
+      gap: 14px;
+      margin: 0;
+    }
+
+    .explore-layout {
+      margin-top: 26px;
+    }
+
+    .explore-grid > .explore-card:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .explore-grid > .explore-card:nth-child(2) {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .explore-grid > .explore-card:nth-child(3) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .explore-grid > .explore-card:nth-child(4) {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .explore-card {
+      position: relative;
+      display: flex;
+      min-height: 164px;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 238, 0.78);
+      box-shadow: 0 16px 44px rgba(48, 34, 14, 0.1);
+    }
+
+    .explore-card .icon {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      margin-bottom: 16px;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff8e8;
+      background: var(--ink);
+      font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .explore-card:nth-child(1) .icon { background: var(--cyan-deep); }
+    .explore-card:nth-child(2) .icon { background: var(--moss); }
+    .explore-card:nth-child(3) .icon { color: var(--ink); background: var(--sun); }
+    .explore-card:nth-child(4) .icon { background: var(--ember); }
+
+    .explore-card-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .coming-soon {
+      display: inline-flex;
+      min-height: 22px;
+      align-items: center;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--sun);
+      font-family: "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .explore-card p {
+      margin-top: 10px;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .explore-card-link {
+      color: inherit;
+      text-decoration: none;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .explore-card-link:hover,
+    .explore-card-link:focus-visible {
+      outline: none;
+      border-color: var(--cyan-deep);
+      box-shadow: 7px 7px 0 rgba(0, 174, 239, 0.58);
+      transform: translate(-2px, -2px);
+    }
+
+    .tool-action-card {
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .tool-action-card:hover,
+    .tool-action-card:focus-visible {
+      outline: none;
+      border-color: var(--ember);
+      box-shadow: 7px 7px 0 rgba(242, 93, 43, 0.56);
+      transform: translate(-2px, -2px);
+    }
+
+    .card-action {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 5px 7px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: rgba(0, 174, 239, 0.18);
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .community-panel {
+      position: relative;
+      display: grid;
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      min-width: 0;
+      align-content: space-between;
+      justify-items: center;
+      padding: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 250, 238, 0.2);
+      border-radius: 8px;
+      color: #fff8e8;
+      background:
+        linear-gradient(145deg, rgba(0, 174, 239, 0.2), transparent 46%),
+        #16231f;
+      box-shadow: 8px 8px 0 rgba(0, 174, 239, 0.55);
+    }
+
+    .community-copy {
+      width: 100%;
+    }
+
+    .community-kicker {
+      display: inline-flex;
+      margin-bottom: 8px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--sun);
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .community-panel h3 {
+      max-width: 260px;
+      color: #fff8e8;
+      font-size: clamp(1.45rem, 2.1vw, 2rem);
+      letter-spacing: 0;
+      line-height: 0.98;
+    }
+
+    .community-panel p {
+      max-width: 270px;
+      margin-top: 8px;
+      color: rgba(255, 248, 232, 0.7);
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.32;
+    }
+
+    .community-qr {
+      display: grid;
+      justify-items: center;
+      margin-top: 12px;
+      padding: 6px;
+      border: 1px solid rgba(255, 250, 238, 0.28);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .community-qr img {
+      width: clamp(140px, 12vw, 180px);
+      border-radius: 4px;
+    }
+
+    body.tool-dialog-open {
+      overflow: hidden;
+    }
+
+    .tool-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: clamp(20px, 4vw, 56px);
+      visibility: hidden;
+      background: rgba(17, 27, 24, 0.84);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    .tool-dialog.is-open {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .tool-dialog-panel {
+      position: relative;
+      display: grid;
+      width: min(1080px, 100%);
+      max-height: calc(100svh - 40px);
+      grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+      overflow: auto;
+      border: 1px solid rgba(255, 250, 238, 0.3);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.48);
+      transform: translateY(28px) scale(0.96);
+      transition: transform 260ms cubic-bezier(0.2, 0.9, 0.25, 1.1);
+    }
+
+    .tool-dialog.is-open .tool-dialog-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .tool-dialog-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid rgba(17, 27, 24, 0.25);
+      border-radius: 50%;
+      color: var(--ink);
+      background: rgba(255, 250, 238, 0.9);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .tool-dialog-close:hover,
+    .tool-dialog-close:focus-visible {
+      outline: 2px solid var(--cyan);
+      background: #fff;
+    }
+
+    .mcp-weather-preview {
+      display: grid;
+      min-height: 500px;
+      align-content: space-between;
+      padding: 28px;
+      color: #fff8e8;
+      background:
+        linear-gradient(rgba(255, 250, 238, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 250, 238, 0.06) 1px, transparent 1px),
+        linear-gradient(145deg, #057eaa, #16231f 72%);
+      background-size: 32px 32px, 32px 32px, auto;
+    }
+
+    .mcp-preview-label {
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .mcp-reading {
+      padding: 18px;
+      border: 1px solid rgba(255, 250, 238, 0.24);
+      border-radius: 8px;
+      background: rgba(17, 27, 24, 0.52);
+      backdrop-filter: blur(8px);
+    }
+
+    .mcp-reading > strong {
+      display: block;
+      font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+      font-size: 3.8rem;
+      line-height: 0.9;
+    }
+
+    .mcp-reading > span {
+      display: block;
+      margin-top: 7px;
+      color: rgba(255, 248, 232, 0.72);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .mcp-reading-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .mcp-reading-grid div {
+      padding-top: 9px;
+      border-top: 1px solid rgba(255, 250, 238, 0.2);
+    }
+
+    .mcp-reading-grid span,
+    .mcp-reading-grid strong {
+      display: block;
+      font-family: "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      font-size: 0.68rem;
+      line-height: 1.2;
+    }
+
+    .mcp-dialog-copy {
+      padding: 28px;
+    }
+
+    .mcp-dialog-kicker {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #fff8e8;
+      background: var(--cyan-deep);
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .mcp-dialog-copy h2 {
+      max-width: 560px;
+      font-size: 2.35rem;
+    }
+
+    .mcp-dialog-copy > p {
+      margin-top: 10px;
+      color: var(--ink-soft);
+      font-size: 0.94rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .mcp-access {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .mcp-access span {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: rgba(0, 174, 239, 0.18);
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .mcp-access span:first-child {
+      background: rgba(89, 111, 44, 0.22);
+    }
+
+    .mcp-endpoint {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--cyan-deep);
+      background: rgba(0, 174, 239, 0.08);
+    }
+
+    .mcp-endpoints {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mcp-endpoints .mcp-endpoint {
+      margin-top: 0;
+    }
+
+    .mcp-endpoint > span,
+    .mcp-config-header span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink-soft);
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .mcp-endpoint code {
+      display: block;
+      color: var(--cyan-deep);
+      font-family: "Courier New", monospace;
+      font-size: 0.9rem;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .mcp-endpoint p {
+      margin-top: 5px;
+      color: var(--ink-soft);
+      font-size: 0.7rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .mcp-endpoint a {
+      color: var(--cyan-deep);
+      font-weight: 900;
+    }
+
+    .mcp-tool-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .mcp-tool {
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mcp-tool code {
+      color: var(--cyan-deep);
+      font-family: "Courier New", monospace;
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .mcp-tool p {
+      margin-top: 4px;
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .mcp-config {
+      margin-top: 14px;
+      overflow: hidden;
+      border-radius: 8px;
+      color: #fff8e8;
+      background: var(--ink);
+    }
+
+    .mcp-config-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(255, 250, 238, 0.16);
+    }
+
+    .mcp-config-header span {
+      margin: 0;
+      color: rgba(255, 248, 232, 0.64);
+    }
+
+    .mcp-config-header code {
+      color: var(--sun);
+      font-family: "Courier New", monospace;
+      font-size: 0.66rem;
+      font-weight: 900;
+    }
+
+    .mcp-config pre {
+      margin: 0;
+      padding: 11px 12px;
+      overflow: auto;
+      font-family: "Courier New", monospace;
+      font-size: 0.66rem;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .mcp-dialog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .controls {
+      position: fixed;
+      right: clamp(14px, 2.4vw, 32px);
+      top: 50%;
+      z-index: 30;
+      display: grid;
+      gap: 10px;
+      transform: translateY(-50%);
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border: 1px solid rgba(17, 27, 24, 0.28);
+      border-radius: 50%;
+      background: rgba(255, 250, 238, 0.72);
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .dot.active {
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(0, 174, 239, 0.16);
+      transform: scale(1.18);
+    }
+
+    .hud {
+      position: fixed;
+      right: clamp(16px, 3vw, 44px);
+      bottom: clamp(16px, 3vw, 34px);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 238, 0.78);
+      color: var(--ink-soft);
+      box-shadow: 0 18px 48px rgba(48, 34, 14, 0.14);
+      backdrop-filter: blur(14px);
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .hud strong {
+      color: var(--ink);
+      font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+      font-size: 1.16rem;
+      letter-spacing: -0.04em;
+    }
+
+    .slide-title {
+      max-width: 180px;
+      color: var(--ink-soft);
+      letter-spacing: 0.04em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    html[data-screen="short-wide"] .slide {
+      padding: 48px clamp(46px, 5vw, 72px) 42px;
+    }
+
+    html[data-screen="short-wide"] .slide-inner {
+      width: min(1500px, calc(100vw - 132px));
+    }
+
+    html[data-screen="short-wide"] .slide-logo {
+      top: 12px;
+      left: 18px;
+      width: 92px;
+    }
+
+    html[data-screen="short-wide"] .split {
+      grid-template-columns: minmax(0, 1.24fr) minmax(280px, 0.76fr);
+      gap: clamp(24px, 3vw, 42px);
+    }
+
+    html[data-screen="short-wide"] .split.wide-visual {
+      grid-template-columns: minmax(420px, 0.86fr) minmax(0, 1.14fr);
+    }
+
+    html[data-screen="short-wide"] h1 {
+      max-width: 900px;
+      font-size: clamp(3.35rem, 4.05vw, 5.2rem);
+      line-height: 0.9;
+    }
+
+    html[data-screen="short-wide"] #intro .split {
+      grid-template-columns: minmax(0, 1.42fr) minmax(280px, 0.58fr);
+      gap: clamp(24px, 2.5vw, 40px);
+    }
+
+    html[data-screen="short-wide"] #intro .hero-title {
+      max-width: 980px;
+      font-size: clamp(2.9rem, 3.25vw, 4.3rem);
+    }
+
+    html[data-screen="short-wide"] h2 {
+      max-width: 820px;
+      font-size: clamp(2.75rem, 3.8vw, 4.55rem);
+      line-height: 0.92;
+    }
+
+    html[data-screen="short-wide"] .voice-orbit {
+      min-height: min(44vh, 340px);
+    }
+
+    html[data-screen="short-wide"] .media img {
+      max-height: min(36vh, 290px);
+    }
+
+    html[data-screen="short-wide"] .media.compact img {
+      max-height: min(19vh, 150px);
+    }
+
+    html[data-screen="short-wide"] .flash-options {
+      margin-top: 12px;
+    }
+
+    html[data-screen="short-wide"] .flash-option {
+      min-height: 92px;
+      padding: 12px 14px;
+    }
+
+    html[data-screen="short-wide"] .flash-option-topline {
+      margin-bottom: 3px;
+    }
+
+    html[data-screen="short-wide"] .flash-link {
+      min-height: 36px;
+      padding: 7px 11px;
+    }
+
+    html[data-screen="short-wide"] .explore-card {
+      min-height: 124px;
+    }
+
+    html[data-screen="short-wide"] .explore-layout {
+      margin-top: 16px;
+    }
+
+    html[data-screen="short-wide"] .explore-grid {
+      grid-template-columns: minmax(0, 1fr) 250px minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    html[data-screen="short-wide"] .community-panel {
+      padding: 13px;
+    }
+
+    html[data-screen="short-wide"] .community-qr img {
+      width: 132px;
+    }
+
+    html[data-screen="short-wide"] .tool-dialog {
+      padding: 8px;
+    }
+
+    html[data-screen="short-wide"] .tool-dialog-panel {
+      max-height: calc(100svh - 16px);
+    }
+
+    html[data-screen="short-wide"] .mcp-weather-preview {
+      padding: 24px;
+    }
+
+    html[data-screen="short-wide"] .mcp-dialog-copy {
+      padding: 22px 24px;
+    }
+
+    html[data-screen="short-wide"] .mcp-dialog-kicker {
+      margin-bottom: 8px;
+    }
+
+    html[data-screen="short-wide"] .mcp-dialog-copy > p,
+    html[data-screen="short-wide"] .mcp-access,
+    html[data-screen="short-wide"] .mcp-endpoints,
+    html[data-screen="short-wide"] .mcp-tool-list,
+    html[data-screen="short-wide"] .mcp-config,
+    html[data-screen="short-wide"] .mcp-dialog-actions {
+      margin-top: 10px;
+    }
+
+    html[data-screen="short-wide"] .mcp-endpoint {
+      padding: 10px 12px;
+    }
+
+    html[data-screen="short-wide"] .mcp-tool {
+      padding: 8px 0;
+    }
+
+    html[data-screen="short-wide"] .mcp-config pre {
+      padding-block: 8px;
+    }
+
+    html[data-screen="ipad"] .slide {
+      align-items: start;
+      overflow: auto;
+      padding: 92px 32px 78px;
+    }
+
+    html[data-screen="ipad"] .slide-inner {
+      width: min(820px, 100%);
+    }
+
+    html[data-screen="ipad"] .slide-logo {
+      width: 96px;
+    }
+
+    html[data-screen="ipad"] .split,
+    html[data-screen="ipad"] .split.wide-visual {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    html[data-screen="ipad"] h1 {
+      max-width: 740px;
+      font-size: clamp(3.2rem, 7vw, 4.9rem);
+    }
+
+    html[data-screen="ipad"] h2 {
+      max-width: 740px;
+      font-size: clamp(2.8rem, 6vw, 4.3rem);
+    }
+
+    html[data-screen="ipad"] .voice-orbit {
+      min-height: 300px;
+    }
+
+    html[data-screen="ipad"] .media img {
+      max-height: 34vh;
+    }
+
+    html[data-screen="ipad"] .timeline,
+    html[data-screen="ipad"] .explore-grid,
+    html[data-screen="ipad"] .pairing-images {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (orientation: landscape) {
+      html[data-screen="ipad"] .slide {
+        align-items: center;
+        overflow: hidden;
+        padding: 72px 28px 58px;
+      }
+
+      html[data-screen="ipad"] .slide-inner {
+        width: min(980px, 100%);
+      }
+
+      html[data-screen="ipad"] .split,
+      html[data-screen="ipad"] .split.wide-visual {
+        grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+        gap: 20px;
+      }
+
+      html[data-screen="ipad"] h1 {
+        font-size: clamp(3rem, 6vw, 4.25rem);
+        line-height: 0.9;
+      }
+
+      html[data-screen="ipad"] h2 {
+        font-size: clamp(2.45rem, 4.9vw, 3.6rem);
+      }
+
+      html[data-screen="ipad"] .lead {
+        margin-top: 12px;
+        font-size: 0.96rem;
+        line-height: 1.38;
+      }
+
+      html[data-screen="ipad"] .button-row {
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      html[data-screen="ipad"] .button {
+        min-height: 38px;
+        padding: 8px 12px;
+        font-size: 0.82rem;
+      }
+
+      html[data-screen="ipad"] .metric-grid {
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      html[data-screen="ipad"] .metric {
+        padding: 10px 12px;
+      }
+
+      html[data-screen="ipad"] .voice-orbit {
+        min-height: 300px;
+      }
+
+      html[data-screen="ipad"] .media img {
+        max-height: 32vh;
+      }
+
+      html[data-screen="ipad"] .media.compact img {
+        max-height: 21vh;
+      }
+
+      html[data-screen="ipad"] .timeline-step {
+        min-height: 116px;
+      }
+
+      html[data-screen="ipad"] .timeline {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      html[data-screen="ipad"] .pairing-images {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      html[data-screen="ipad"] .explore-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      html[data-screen="ipad"] .explore-card {
+        min-height: 132px;
+        padding: 13px;
+      }
+
+      html[data-screen="ipad"] .explore-card .icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        font-size: 1rem;
+      }
+
+      html[data-screen="ipad"] .explore-card p {
+        font-size: 0.82rem;
+        line-height: 1.32;
+      }
+    }
+
+    html[data-screen="phone"] {
+      scroll-snap-type: y proximity;
+    }
+
+    html[data-screen="phone"] .slide {
+      align-items: start;
+      overflow: auto;
+      padding: 58px 12px 48px;
+    }
+
+    html[data-screen="phone"] .slide-logo {
+      top: 12px;
+      left: 12px;
+      width: 76px;
+    }
+
+    html[data-screen="phone"] .controls {
+      display: none;
+    }
+
+    html[data-screen="phone"] .image-stage {
+      padding: 64px 10px 54px;
+    }
+
+    html[data-screen="phone"] .image-stage-frame {
+      max-height: calc(100svh - 118px);
+      border-radius: 10px;
+    }
+
+    html[data-screen="phone"] .image-stage-caption {
+      min-height: 48px;
+      padding: 9px 11px;
+      font-size: 0.68rem;
+    }
+
+    html[data-screen="phone"] .image-stage-button {
+      width: 38px;
+      height: 38px;
+    }
+
+    html[data-screen="phone"] .image-stage-previous,
+    html[data-screen="phone"] .image-stage-next {
+      top: auto;
+      bottom: 8px;
+      transform: none;
+    }
+
+    html[data-screen="phone"] .image-stage-previous:hover,
+    html[data-screen="phone"] .image-stage-previous:focus-visible,
+    html[data-screen="phone"] .image-stage-next:hover,
+    html[data-screen="phone"] .image-stage-next:focus-visible {
+      transform: scale(1.08);
+    }
+
+    html[data-screen="phone"] .split,
+    html[data-screen="phone"] .split.wide-visual,
+    html[data-screen="phone"] .config-grid,
+    html[data-screen="phone"] .timeline,
+    html[data-screen="phone"] .pairing-images {
+      grid-template-columns: 1fr;
+    }
+
+    html[data-screen="phone"] .flash-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    html[data-screen="phone"] .flash-option {
+      min-height: 126px;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    html[data-screen="phone"] .flash-option-topline {
+      display: grid;
+      justify-items: start;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    html[data-screen="phone"] .flash-option h3 {
+      font-size: 0.94rem;
+    }
+
+    html[data-screen="phone"] .flash-option p {
+      font-size: 0.68rem;
+      line-height: 1.24;
+    }
+
+    html[data-screen="phone"] .flash-link {
+      min-height: 34px;
+      padding: 7px 8px;
+      font-size: 0.66rem;
+    }
+
+    html[data-screen="phone"] .metric-grid,
+    html[data-screen="phone"] .button-map {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    html[data-screen="phone"] .pill-list,
+    html[data-screen="phone"] .explore-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    html[data-screen="phone"] h1 {
+      font-size: clamp(2.25rem, 10.5vw, 2.9rem);
+      line-height: 0.92;
+    }
+
+    html[data-screen="phone"] h2 {
+      font-size: clamp(2rem, 9vw, 2.55rem);
+      line-height: 0.94;
+    }
+
+    html[data-screen="phone"] h3 {
+      font-size: 1.04rem;
+    }
+
+    html[data-screen="phone"] .slide-kicker {
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      font-size: 0.62rem;
+    }
+
+    html[data-screen="phone"] .lead {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      line-height: 1.32;
+    }
+
+    html[data-screen="phone"] #intro .split {
+      gap: 0;
+    }
+
+    html[data-screen="phone"] #intro .voice-orbit,
+    html[data-screen="phone"] #pair .pairing-images,
+    html[data-screen="phone"] #bot .image-stack .media:nth-child(2) {
+      display: none;
+    }
+
+    html[data-screen="phone"] .button-row {
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    html[data-screen="phone"] .button {
+      min-height: 32px;
+      padding: 6px 8px;
+      box-shadow: 4px 4px 0 var(--cyan);
+      font-size: 0.72rem;
+    }
+
+    html[data-screen="phone"] .metric-grid,
+    html[data-screen="phone"] .pill-list,
+    html[data-screen="phone"] .big-list,
+    html[data-screen="phone"] .button-map,
+    html[data-screen="phone"] .timeline,
+    html[data-screen="phone"] .explore-grid {
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    html[data-screen="phone"] .metric {
+      padding: 8px;
+    }
+
+    html[data-screen="phone"] .metric strong {
+      font-size: 1rem;
+    }
+
+    html[data-screen="phone"] .metric span {
+      font-size: 0.56rem;
+      line-height: 1.1;
+    }
+
+    html[data-screen="phone"] .pill-list li {
+      padding: 7px 8px;
+      font-size: 0.68rem;
+      line-height: 1.22;
+    }
+
+    html[data-screen="phone"] .pill-list li::before {
+      display: none;
+    }
+
+    html[data-screen="phone"] .big-list li {
+      padding: 7px 8px 7px 42px;
+      font-size: 0.72rem;
+      line-height: 1.24;
+    }
+
+    html[data-screen="phone"] .big-list li::before {
+      left: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+      font-size: 0.74rem;
+    }
+
+    html[data-screen="phone"] .panel-pad {
+      padding: 12px;
+    }
+
+    html[data-screen="phone"] .panel .lead {
+      margin-top: 8px !important;
+      font-size: 0.76rem !important;
+      line-height: 1.28;
+    }
+
+    html[data-screen="phone"] .button-card {
+      padding: 8px;
+      box-shadow: 3px 3px 0 rgba(0, 174, 239, 0.7);
+    }
+
+    html[data-screen="phone"] .button-card strong {
+      margin-bottom: 4px;
+      font-size: 0.92rem;
+    }
+
+    html[data-screen="phone"] .button-card span {
+      font-size: 0.62rem;
+      line-height: 1.18;
+    }
+
+    html[data-screen="phone"] .media img {
+      max-height: 15vh;
+      padding: 6px;
+    }
+
+    html[data-screen="phone"] .media.compact img {
+      max-height: 12vh;
+    }
+
+    html[data-screen="phone"] .caption {
+      padding: 5px 7px;
+      font-size: 0.54rem;
+    }
+
+    html[data-screen="phone"] .timeline-step {
+      padding: 8px;
+    }
+
+    html[data-screen="phone"] .timeline-step strong {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 6px;
+      border-radius: 9px;
+      font-size: 0.74rem;
+    }
+
+    html[data-screen="phone"] .timeline-step > span {
+      font-size: 0.68rem;
+      line-height: 1.22;
+    }
+
+    html[data-screen="phone"] .explore-card {
+      padding: 9px;
+    }
+
+    html[data-screen="phone"] .explore-card .icon {
+      width: 26px;
+      height: 26px;
+      margin-bottom: 6px;
+      border-radius: 9px;
+      font-size: 0.72rem;
+    }
+
+    html[data-screen="phone"] .explore-card p {
+      margin-top: 4px;
+      font-size: 0.66rem;
+      line-height: 1.22;
+    }
+
+    html[data-screen="phone"] .card-action {
+      top: 9px;
+      right: 9px;
+      padding: 3px 5px;
+      font-size: 0.46rem;
+    }
+
+    html[data-screen="phone"] .explore-layout {
+      margin-top: 10px;
+    }
+
+    html[data-screen="phone"] .explore-layout .explore-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 0;
+    }
+
+    html[data-screen="phone"] .explore-grid > .explore-card {
+      grid-column: auto;
+      grid-row: auto;
+    }
+
+    html[data-screen="phone"] .community-panel {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      box-shadow: 4px 4px 0 rgba(0, 174, 239, 0.55);
+    }
+
+    html[data-screen="phone"] .community-copy {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    html[data-screen="phone"] .community-qr {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    html[data-screen="phone"] .community-kicker {
+      margin-bottom: 5px;
+      padding: 4px 6px;
+      font-size: 0.5rem;
+    }
+
+    html[data-screen="phone"] .community-panel h3 {
+      font-size: 1.12rem;
+    }
+
+    html[data-screen="phone"] .community-panel p {
+      margin-top: 5px;
+      font-size: 0.62rem;
+      line-height: 1.22;
+    }
+
+    html[data-screen="phone"] .community-qr {
+      margin-top: 0;
+      padding: 4px;
+    }
+
+    html[data-screen="phone"] .community-qr img {
+      width: 86px;
+    }
+
+    html[data-screen="phone"] .tool-dialog {
+      padding: 10px;
+    }
+
+    html[data-screen="phone"] .tool-dialog-panel {
+      max-height: calc(100svh - 20px);
+      grid-template-columns: 1fr;
+    }
+
+    html[data-screen="phone"] .mcp-weather-preview {
+      min-height: 190px;
+      padding: 16px;
+    }
+
+    html[data-screen="phone"] .mcp-reading {
+      width: min(210px, 72%);
+      padding: 11px;
+    }
+
+    html[data-screen="phone"] .mcp-reading > strong {
+      font-size: 2.3rem;
+    }
+
+    html[data-screen="phone"] .mcp-reading-grid {
+      margin-top: 9px;
+    }
+
+    html[data-screen="phone"] .mcp-dialog-copy {
+      padding: 18px;
+    }
+
+    html[data-screen="phone"] .mcp-dialog-copy h2 {
+      font-size: 2rem;
+    }
+
+    html[data-screen="phone"] .mcp-dialog-copy > p {
+      margin-top: 9px;
+      font-size: 0.78rem;
+      line-height: 1.36;
+    }
+
+    html[data-screen="phone"] .mcp-access,
+    html[data-screen="phone"] .mcp-endpoints,
+    html[data-screen="phone"] .mcp-config {
+      margin-top: 10px;
+    }
+
+    html[data-screen="phone"] .mcp-endpoints {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    html[data-screen="phone"] .mcp-endpoint {
+      padding: 9px 10px;
+    }
+
+    html[data-screen="phone"] .mcp-tool-list,
+    html[data-screen="phone"] .mcp-dialog-actions {
+      margin-top: 12px;
+    }
+
+    html[data-screen="phone"] .mcp-tool-list {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    html[data-screen="phone"] .mcp-tool {
+      padding: 10px 0;
+    }
+
+    html[data-screen="phone"] .mcp-config pre {
+      font-size: 0.58rem;
+    }
+
+    html[data-screen="phone"] .pill-list li,
+    html[data-screen="phone"] .big-list li,
+    html[data-screen="phone"] .timeline-step,
+    html[data-screen="phone"] .explore-card {
+      min-height: auto;
+    }
+
+    html[data-screen="phone"] .hud {
+      left: 12px;
+      right: 12px;
+      justify-content: space-between;
+    }
+
+    .fade-up {
+      animation: fadeUp 760ms ease both;
+    }
+
+    .delay-1 { animation-delay: 90ms; }
+    .delay-2 { animation-delay: 180ms; }
+    .delay-3 { animation-delay: 270ms; }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes floatBlob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(18px) rotate(12deg); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      from { transform: scaleY(0.54); opacity: 0.72; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+
+    @media (min-width: 900px) and (max-height: 820px) {
+      .slide {
+        padding-top: 52px;
+        padding-bottom: 44px;
+      }
+
+      .slide-logo {
+        top: 12px;
+        left: 18px;
+        width: 92px;
+      }
+
+      .slide-kicker {
+        margin-bottom: 10px;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+      }
+
+      h1 {
+        max-width: 860px;
+        font-size: clamp(3.3rem, 4.2vw, 5.25rem);
+        line-height: 0.9;
+      }
+
+      h2 {
+        max-width: 760px;
+        font-size: clamp(2.8rem, 4vw, 4.65rem);
+      }
+
+      h3 {
+        font-size: clamp(1.2rem, 1.8vw, 1.65rem);
+      }
+
+      .lead {
+        margin-top: 12px;
+        font-size: 0.98rem;
+        line-height: 1.38;
+      }
+
+      .button-row {
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .button {
+        min-height: 38px;
+        padding: 8px 13px;
+        font-size: 0.84rem;
+      }
+
+      .metric-grid {
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .metric {
+        padding: 10px 12px;
+      }
+
+      .metric strong {
+        font-size: 1.18rem;
+      }
+
+      .metric span {
+        font-size: 0.68rem;
+      }
+
+      .voice-orbit {
+        min-height: min(45vh, 350px);
+      }
+
+      .voice-core {
+        width: 142px;
+        border-width: 8px;
+        border-radius: 32px;
+      }
+
+      .bars {
+        height: 74px;
+        gap: 6px;
+      }
+
+      .bars span {
+        width: 8px;
+      }
+
+      .pill-list,
+      .big-list {
+        gap: 9px;
+        margin-top: 14px;
+      }
+
+      .pill-list li {
+        min-height: 44px;
+        padding: 10px 12px 10px 42px;
+        font-size: 0.88rem;
+      }
+
+      .big-list li {
+        min-height: 48px;
+        padding: 10px 14px 10px 58px;
+        font-size: 0.88rem;
+      }
+
+      .big-list li::before {
+        width: 30px;
+        height: 30px;
+      }
+
+      .panel-pad {
+        padding: 18px;
+      }
+
+      .button-map {
+        gap: 9px;
+        margin-top: 14px;
+      }
+
+      .button-card {
+        padding: 12px;
+      }
+
+      .button-card strong {
+        margin-bottom: 5px;
+        font-size: 1.22rem;
+      }
+
+      .button-card span {
+        font-size: 0.78rem;
+      }
+
+      .media img {
+        max-height: min(37vh, 300px);
+        padding: 8px;
+      }
+
+      .media.compact img {
+        max-height: min(20vh, 160px);
+      }
+
+      .caption {
+        padding: 7px 10px 8px;
+        font-size: 0.66rem;
+      }
+
+      .timeline {
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .timeline-step {
+        min-height: 108px;
+        padding: 10px;
+      }
+
+      .timeline-step strong {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 8px;
+      }
+
+      .timeline-step > span {
+        font-size: 0.76rem;
+        line-height: 1.28;
+      }
+
+      .code-chip {
+        padding: 2px 5px;
+      }
+
+      .pairing-images {
+        margin-top: 12px;
+      }
+
+      .explore-grid {
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .explore-layout .explore-grid {
+        margin-top: 0;
+      }
+
+      .explore-card {
+        min-height: 132px;
+        padding: 13px;
+      }
+
+      .explore-card .icon {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 9px;
+        border-radius: 12px;
+        font-size: 1rem;
+      }
+
+      .explore-card p {
+        margin-top: 6px;
+        font-size: 0.82rem;
+        line-height: 1.32;
+      }
+
+      .hud {
+        right: 20px;
+        bottom: 14px;
+        padding: 7px 10px;
+        font-size: 0.74rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .slide {
+        padding-top: 86px;
+      }
+
+      .split,
+      .split.wide-visual {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+
+      .voice-orbit {
+        min-height: 340px;
+      }
+
+      .timeline,
+      .explore-grid,
+      .pairing-images {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .media img {
+        max-height: 35vh;
+      }
+    }
+
+    @media (max-width: 720px) {
+      html {
+        scroll-snap-type: y proximity;
+      }
+
+      .slide {
+        min-height: 100svh;
+        overflow: auto;
+        padding: 82px 14px 72px;
+      }
+
+      .slide-logo {
+        width: 84px;
+      }
+
+      .metric-grid,
+      .pill-list,
+      .button-map,
+      .config-grid,
+      .timeline,
+      .explore-grid,
+      .pairing-images {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-list,
+      .big-list,
+      .config-grid,
+      .timeline,
+      .explore-grid {
+        gap: 9px;
+        margin-top: 16px;
+      }
+
+      .pill-list li,
+      .big-list li,
+      .config-card,
+      .timeline-step,
+      .explore-card {
+        min-height: auto;
+      }
+
+      .media.compact img,
+      .media img {
+        max-height: 28vh;
+      }
+
+      .controls {
+        right: 10px;
+        gap: 7px;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+      }
+
+      .hud {
+        left: 12px;
+        right: 12px;
+        justify-content: space-between;
+      }
+
+      .slide-title {
+        font-size: 0.72rem;
+      }
+    }
+
+    /* Cinematic hardware-AI HUD theme. */
+    :root {
+      --ink: #eafcff;
+      --ink-soft: rgba(216, 239, 244, 0.76);
+      --paper: #071319;
+      --paper-2: #0b2028;
+      --cyan: #00d9ff;
+      --cyan-deep: #00a7c7;
+      --ember: #ff4b2b;
+      --sun: #ffc247;
+      --moss: #72d6a5;
+      --cream: rgba(6, 23, 30, 0.86);
+      --line: rgba(0, 217, 255, 0.25);
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+      --hud-panel: rgba(5, 20, 27, 0.84);
+      --hud-panel-strong: #071219;
+      --hud-red: #ff4b2b;
+    }
+
+    body {
+      color: var(--ink);
+      background:
+        linear-gradient(118deg, rgba(0, 217, 255, 0.09), transparent 32%),
+        linear-gradient(298deg, rgba(255, 75, 43, 0.12), transparent 28%),
+        linear-gradient(145deg, #020609 0%, #07151b 48%, #12090a 100%);
+    }
+
+    body::before {
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(0, 217, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 217, 255, 0.07) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0.25));
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 217, 255, 0.025) 4px);
+      animation: hudScan 12s linear infinite;
+    }
+
+    .slide {
+      border-top: 1px solid rgba(0, 217, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 75, 43, 0.08);
+    }
+
+    .slide::before {
+      top: 0;
+      right: 0;
+      width: min(36vw, 560px);
+      min-width: 280px;
+      border: 0;
+      border-radius: 0;
+      background:
+        linear-gradient(135deg, transparent 38%, rgba(0, 217, 255, 0.22) 39% 39.5%, transparent 40%),
+        linear-gradient(90deg, transparent 48%, rgba(0, 217, 255, 0.12) 49% 51%, transparent 52%);
+      clip-path: polygon(36% 0, 100% 0, 100% 100%, 82% 100%, 0 18%);
+      animation: hudSweep 9s ease-in-out infinite alternate;
+    }
+
+    .slide:nth-child(even)::before {
+      filter: hue-rotate(155deg) saturate(1.4);
+    }
+
+    .slide::after {
+      left: 0;
+      bottom: 0;
+      width: min(22vw, 320px);
+      min-width: 160px;
+      border-radius: 0;
+      background: repeating-linear-gradient(135deg, rgba(255, 75, 43, 0.2) 0 2px, transparent 2px 13px);
+      clip-path: polygon(0 28%, 72% 100%, 0 100%);
+      transform: none;
+    }
+
+    .slide-logo {
+      filter: drop-shadow(0 0 14px rgba(0, 217, 255, 0.62));
+    }
+
+    h1,
+    h2,
+    h3,
+    .button-card strong,
+    .mcp-reading > strong {
+      font-family: "Avenir Next Condensed", "Futura Condensed ExtraBold", Impact, sans-serif;
+      letter-spacing: 0.015em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      text-shadow: 0 0 28px rgba(0, 217, 255, 0.16);
+    }
+
+    .slide-kicker,
+    .hud,
+    .mcp-dialog-kicker,
+    .community-kicker,
+    .mcp-access span,
+    .coming-soon,
+    .card-action,
+    .flash-badge {
+      border-radius: 2px;
+    }
+
+    .slide-kicker {
+      border-color: rgba(0, 217, 255, 0.42);
+      color: var(--cyan);
+      background: rgba(0, 31, 41, 0.68);
+      box-shadow: inset 3px 0 0 var(--hud-red), 0 0 24px rgba(0, 217, 255, 0.08);
+    }
+
+    .lead,
+    .metric span,
+    .pill-list li,
+    .big-list li,
+    .config-card span,
+    .timeline-step > span,
+    .explore-card p,
+    .caption {
+      color: var(--ink-soft);
+    }
+
+    .panel,
+    .metric,
+    .pill-list li,
+    .big-list li,
+    .config-card,
+    .timeline-step,
+    .explore-card,
+    .flash-option,
+    .media {
+      border-color: rgba(0, 217, 255, 0.25);
+      border-radius: 4px;
+      background:
+        linear-gradient(135deg, rgba(0, 217, 255, 0.055), transparent 44%),
+        var(--hud-panel);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.015), 0 18px 54px rgba(0, 0, 0, 0.28);
+    }
+
+    .metric,
+    .config-card,
+    .timeline-step,
+    .explore-card {
+      position: relative;
+    }
+
+    .metric::after,
+    .config-card::after,
+    .timeline-step::after,
+    .explore-card::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 22px;
+      height: 2px;
+      background: var(--hud-red);
+      box-shadow: 0 0 10px rgba(255, 75, 43, 0.65);
+    }
+
+    .metric strong,
+    .config-card strong {
+      color: var(--ink);
+    }
+
+    .button,
+    .flash-link {
+      border-color: rgba(0, 217, 255, 0.52);
+      border-radius: 3px;
+      color: var(--cyan);
+      background: rgba(0, 25, 34, 0.82);
+      box-shadow: inset 3px 0 0 var(--cyan);
+      text-transform: uppercase;
+    }
+
+    .button.primary,
+    .flash-option.app .flash-link {
+      color: #071219;
+      border-color: var(--cyan);
+      background: var(--cyan);
+      box-shadow: 7px 7px 0 rgba(255, 75, 43, 0.76);
+    }
+
+    .button:hover,
+    .button:focus-visible,
+    .flash-link:hover,
+    .flash-link:focus-visible {
+      border-color: var(--sun);
+      box-shadow: 7px 7px 0 rgba(255, 75, 43, 0.72), 0 0 26px rgba(0, 217, 255, 0.18);
+    }
+
+    .big-list li::before,
+    .button-card,
+    .prompt-card,
+    .flash-option.app,
+    .code-chip,
+    .community-panel,
+    .mcp-config {
+      color: var(--ink);
+      background: var(--hud-panel-strong);
+    }
+
+    .pill-list li::before {
+      border-radius: 1px;
+      background: var(--cyan);
+      box-shadow: 0 0 14px rgba(0, 217, 255, 0.74);
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .button-card,
+    .prompt-card,
+    .timeline-step,
+    .media,
+    .community-panel,
+    .tool-dialog-panel,
+    .mcp-config,
+    .mcp-reading,
+    .community-qr {
+      border-radius: 4px;
+    }
+
+    .media img {
+      background: #e8eef0;
+    }
+
+    .caption {
+      background: rgba(2, 12, 17, 0.96);
+    }
+
+    .flash-option.app p,
+    .button-card span,
+    .community-panel p {
+      color: var(--ink-soft);
+    }
+
+    .flash-option.web .flash-badge,
+    .timeline-step strong,
+    .explore-card:nth-child(1) .icon {
+      background: var(--cyan-deep);
+    }
+
+    .controls {
+      padding: 10px 7px;
+      border: 1px solid rgba(0, 217, 255, 0.2);
+      background: rgba(2, 14, 19, 0.7);
+      backdrop-filter: blur(10px);
+    }
+
+    .dot {
+      border-color: rgba(0, 217, 255, 0.48);
+      border-radius: 1px;
+      background: rgba(0, 217, 255, 0.12);
+      transform: rotate(45deg);
+    }
+
+    .dot.active {
+      background: var(--hud-red);
+      box-shadow: 0 0 0 5px rgba(255, 75, 43, 0.12), 0 0 18px rgba(255, 75, 43, 0.68);
+      transform: rotate(45deg) scale(1.2);
+    }
+
+    .hud {
+      border-color: rgba(0, 217, 255, 0.34);
+      color: var(--ink-soft);
+      background: rgba(3, 18, 24, 0.84);
+      box-shadow: inset 3px 0 0 var(--hud-red), 0 16px 42px rgba(0, 0, 0, 0.3);
+    }
+
+    .hud strong,
+    .slide-title {
+      color: var(--cyan);
+    }
+
+    .tool-dialog {
+      background: rgba(0, 5, 8, 0.9);
+    }
+
+    .tool-dialog-panel {
+      border-color: rgba(0, 217, 255, 0.35);
+      background: #08151b;
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72);
+    }
+
+    .tool-dialog-close {
+      border-color: rgba(0, 217, 255, 0.45);
+      color: var(--cyan);
+      background: #071219;
+    }
+
+    .mcp-endpoint {
+      background: rgba(0, 217, 255, 0.07);
+    }
+
+    .mcp-weather-preview {
+      background:
+        linear-gradient(rgba(0, 217, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 217, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(145deg, #06546b, #061117 72%);
+      background-size: 32px 32px, 32px 32px, auto;
+    }
+
+    @keyframes hudScan {
+      from { transform: translateY(-4px); }
+      to { transform: translateY(4px); }
+    }
+
+    @keyframes hudSweep {
+      from { opacity: 0.45; transform: translateX(0); }
+      to { opacity: 0.9; transform: translateX(18px); }
+    }
+
+    .flash-ai-button {
+      display: inline-grid;
+      width: 28px;
+      height: 24px;
+      flex: 0 0 auto;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(0, 217, 255, 0.72);
+      border-radius: 3px;
+      color: var(--cyan);
+      background: rgba(0, 217, 255, 0.08);
+      box-shadow: inset 0 -2px 0 rgba(0, 217, 255, 0.22), 0 0 14px rgba(0, 217, 255, 0.12);
+      font: 900 0.62rem/1 "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .flash-ai-button:hover,
+    .flash-ai-button:focus-visible,
+    .flash-ai-button[aria-expanded="true"] {
+      outline: none;
+      color: #031014;
+      background: var(--cyan);
+      box-shadow: 3px 3px 0 var(--hud-red), 0 0 20px rgba(0, 217, 255, 0.4);
+      transform: translate(-1px, -1px);
+    }
+
+    .flash-command-dialog {
+      padding: clamp(14px, 3vw, 36px);
+    }
+
+    .flash-command-panel {
+      display: block;
+      width: min(760px, 100%);
+      padding: clamp(24px, 4vw, 42px);
+      overflow: hidden;
+      border-color: rgba(0, 217, 255, 0.55);
+      background:
+        linear-gradient(rgba(0, 217, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 217, 255, 0.045) 1px, transparent 1px),
+        #061117;
+      background-size: 28px 28px;
+      box-shadow: 12px 12px 0 rgba(255, 75, 43, 0.22), 0 34px 110px rgba(0, 0, 0, 0.76);
+    }
+
+    .flash-command-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 132px;
+      height: 3px;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(0, 217, 255, 0.8);
+    }
+
+    .flash-command-kicker {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--hud-red);
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .flash-command-panel h2 {
+      padding-right: 42px;
+      color: var(--ink);
+      font-size: clamp(1.65rem, 4vw, 2.55rem);
+      line-height: 1;
+    }
+
+    .flash-command-panel > p {
+      margin-top: 10px;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .flash-command-code {
+      position: relative;
+      margin-top: 20px;
+      overflow: auto;
+      border: 1px solid rgba(0, 217, 255, 0.3);
+      border-left: 3px solid var(--cyan);
+      background: rgba(0, 4, 7, 0.9);
+    }
+
+    .flash-command-code::after {
+      content: "CLI / ESPTOOL";
+      position: absolute;
+      top: 9px;
+      right: 11px;
+      color: rgba(0, 217, 255, 0.45);
+      font-size: 0.53rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+    }
+
+    .flash-command-code pre {
+      min-width: 620px;
+      margin: 0;
+      padding: 42px 18px 18px;
+      color: #d9fbff;
+      font: 700 0.8rem/1.65 "Courier New", monospace;
+      white-space: pre;
+    }
+
+    .flash-command-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .flash-command-hint {
+      color: var(--ink-soft);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .flash-copy-button {
+      min-width: 132px;
+      min-height: 40px;
+      border: 1px solid var(--cyan);
+      border-radius: 3px;
+      color: #031014;
+      background: var(--cyan);
+      box-shadow: 5px 5px 0 rgba(255, 75, 43, 0.78);
+      font: 900 0.72rem/1 "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .flash-copy-button:hover,
+    .flash-copy-button:focus-visible {
+      outline: 2px solid var(--sun);
+      outline-offset: 3px;
+      box-shadow: 7px 7px 0 rgba(255, 75, 43, 0.88), 0 0 24px rgba(0, 217, 255, 0.22);
+      transform: translate(-2px, -2px);
+    }
+
+    @media (max-width: 760px) {
+      .flash-option-topline {
+        gap: 7px;
+      }
+
+      .flash-ai-button {
+        width: 26px;
+        height: 22px;
+        font-size: 0.57rem;
+      }
+
+      .flash-command-panel {
+        padding: 22px 16px 18px;
+      }
+
+      .flash-command-code {
+        margin-top: 14px;
+      }
+
+      .flash-command-code pre {
+        min-width: 570px;
+        padding: 38px 14px 14px;
+        font-size: 0.7rem;
+      }
+
+      .flash-command-actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .flash-copy-button {
+        width: 100%;
+      }
+    }
+
+    html[data-screen="phone"] .flash-option-topline {
+      grid-template-columns: auto auto;
+      justify-content: start;
+    }
+
+    html[data-screen="phone"] .flash-option-topline h3 {
+      grid-column: 1 / -1;
+    }
+
+    /* Light companion theme: vivid, friendly, and hardware-first. */
+    :root {
+      --ink: #16343d;
+      --ink-soft: #526e76;
+      --paper: #f8fdfe;
+      --paper-2: #dff7f5;
+      --cyan: #1fc7d1;
+      --cyan-deep: #058f99;
+      --ember: #ff6268;
+      --sun: #ffd55f;
+      --moss: #42b98d;
+      --cream: rgba(255, 255, 255, 0.9);
+      --line: rgba(22, 75, 85, 0.16);
+      --shadow: 0 26px 70px rgba(34, 109, 118, 0.16);
+      --hud-panel: rgba(255, 255, 255, 0.9);
+      --hud-panel-strong: #ffffff;
+      --hud-red: #ff6268;
+    }
+
+    body * {
+      letter-spacing: 0;
+    }
+
+    body {
+      color: var(--ink);
+      background:
+        linear-gradient(124deg, transparent 0 58%, rgba(31, 199, 209, 0.11) 58% 72%, transparent 72%),
+        linear-gradient(305deg, rgba(255, 98, 104, 0.12) 0 16%, transparent 16% 100%),
+        linear-gradient(150deg, #ffffff 0%, #effcfc 50%, #fff7e1 100%);
+    }
+
+    body::before {
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(5, 143, 153, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(5, 143, 153, 0.055) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0.18));
+    }
+
+    body::after {
+      background: repeating-linear-gradient(135deg, transparent 0 28px, rgba(255, 98, 104, 0.025) 28px 30px);
+      animation: none;
+    }
+
+    .slide {
+      border-top-color: rgba(31, 199, 209, 0.12);
+      border-bottom-color: rgba(255, 98, 104, 0.1);
+    }
+
+    .slide::before {
+      top: 0;
+      right: 0;
+      width: min(38vw, 600px);
+      min-width: 280px;
+      border: 0;
+      background:
+        linear-gradient(135deg, transparent 48%, rgba(31, 199, 209, 0.15) 48% 49%, transparent 49%),
+        repeating-linear-gradient(90deg, rgba(31, 199, 209, 0.08) 0 2px, transparent 2px 28px);
+      clip-path: polygon(40% 0, 100% 0, 100% 100%, 82% 100%, 0 16%);
+      filter: none;
+      animation: baymaxDrift 10s ease-in-out infinite alternate;
+    }
+
+    .slide:nth-child(even)::before {
+      filter: none;
+    }
+
+    .slide::after {
+      left: 0;
+      bottom: 0;
+      width: min(24vw, 340px);
+      min-width: 160px;
+      background: repeating-linear-gradient(135deg, rgba(255, 98, 104, 0.22) 0 3px, transparent 3px 14px);
+      clip-path: polygon(0 34%, 76% 100%, 0 100%);
+      transform: none;
+    }
+
+    .slide-logo {
+      filter: drop-shadow(0 8px 18px rgba(5, 143, 153, 0.2));
+    }
+
+    h1,
+    h2,
+    h3,
+    .button-card strong,
+    .mcp-reading > strong {
+      color: var(--ink);
+      font-family: "Avenir Next Rounded", "DIN Alternate", "Trebuchet MS", sans-serif;
+      text-transform: none;
+    }
+
+    h1,
+    h2 {
+      text-shadow: none;
+    }
+
+    .slide-kicker {
+      border-color: rgba(5, 143, 153, 0.28);
+      border-radius: 999px;
+      color: var(--cyan-deep);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: inset 4px 0 0 var(--ember), 0 10px 26px rgba(31, 199, 209, 0.1);
+    }
+
+    .slide-kicker::before {
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cyan), var(--sun), var(--ember));
+      box-shadow: none;
+    }
+
+    .lead,
+    .metric span,
+    .pill-list li,
+    .big-list li,
+    .config-card span,
+    .timeline-step > span,
+    .explore-card p,
+    .flash-option p {
+      color: var(--ink-soft);
+    }
+
+    .panel,
+    .metric,
+    .pill-list li,
+    .big-list li,
+    .config-card,
+    .timeline-step,
+    .explore-card,
+    .flash-option,
+    .media {
+      border-color: rgba(5, 143, 153, 0.17);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(31, 199, 209, 0.06), transparent 48%),
+        rgba(255, 255, 255, 0.88);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 16px 42px rgba(42, 117, 125, 0.12);
+    }
+
+    .metric::after,
+    .config-card::after,
+    .timeline-step::after,
+    .explore-card::after {
+      width: 30px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--ember);
+      box-shadow: none;
+    }
+
+    .metric:nth-child(1) {
+      background: linear-gradient(135deg, rgba(255, 98, 104, 0.14), transparent 70%), #fff;
+    }
+
+    .metric:nth-child(2) {
+      background: linear-gradient(135deg, rgba(31, 199, 209, 0.16), transparent 70%), #fff;
+    }
+
+    .metric:nth-child(3) {
+      background: linear-gradient(135deg, rgba(255, 213, 95, 0.2), transparent 70%), #fff;
+    }
+
+    .metric strong,
+    .config-card strong {
+      color: var(--ink);
+    }
+
+    .button,
+    .flash-link {
+      border-color: rgba(5, 143, 153, 0.34);
+      border-radius: 999px;
+      color: var(--cyan-deep);
+      background: #ffffff;
+      box-shadow: inset 4px 0 0 var(--cyan), 0 8px 20px rgba(31, 199, 209, 0.12);
+      text-transform: none;
+    }
+
+    .button.primary,
+    .flash-option.app .flash-link:not(.firmware-link) {
+      color: #ffffff;
+      border-color: var(--ember);
+      background: var(--ember);
+      box-shadow: 6px 6px 0 rgba(31, 199, 209, 0.7);
+    }
+
+    .button:hover,
+    .button:focus-visible,
+    .flash-link:hover,
+    .flash-link:focus-visible {
+      border-color: var(--ember);
+      box-shadow: 6px 6px 0 rgba(255, 98, 104, 0.55), 0 12px 28px rgba(31, 199, 209, 0.18);
+    }
+
+    .console-button:hover,
+    .console-button:focus-visible {
+      border-color: var(--cyan);
+      box-shadow: 6px 6px 0 rgba(31, 199, 209, 0.68), 0 12px 28px rgba(31, 199, 209, 0.2);
+    }
+
+    .big-list li::before,
+    .code-chip {
+      color: #ffffff;
+      background: var(--cyan-deep);
+    }
+
+    .button-card {
+      color: var(--ink);
+      background: #ffffff;
+      box-shadow: 6px 6px 0 rgba(31, 199, 209, 0.5);
+    }
+
+    .button-card:nth-child(2) {
+      background: #fff3f3;
+      box-shadow: 6px 6px 0 rgba(255, 98, 104, 0.45);
+    }
+
+    .button-card:nth-child(3) {
+      background: #fff9df;
+      box-shadow: 6px 6px 0 rgba(255, 213, 95, 0.65);
+    }
+
+    .button-card span,
+    .flash-option.app p,
+    .community-panel p {
+      color: var(--ink-soft);
+    }
+
+    .pill-list li::before {
+      border-radius: 50%;
+      background: var(--ember);
+      box-shadow: 0 0 0 5px rgba(255, 98, 104, 0.1);
+      transform: translateY(-50%);
+    }
+
+    .media,
+    .community-panel,
+    .tool-dialog-panel,
+    .mcp-config,
+    .mcp-reading,
+    .community-qr {
+      border-radius: 8px;
+    }
+
+    .media img {
+      background: #ffffff;
+    }
+
+    .caption {
+      color: rgba(255, 255, 255, 0.78);
+      background: #18434c;
+    }
+
+    .flash-option.app {
+      color: var(--ink);
+      background:
+        linear-gradient(120deg, rgba(255, 98, 104, 0.12), transparent 46%),
+        #ffffff;
+    }
+
+    .flash-option.web .flash-badge,
+    .timeline-step strong,
+    .explore-card:nth-child(1) .icon {
+      color: #ffffff;
+      background: var(--cyan-deep);
+    }
+
+    .flash-badge {
+      border-radius: 999px;
+      color: #713c00;
+      background: var(--sun);
+    }
+
+    .flash-option-actions {
+      display: grid;
+      gap: 7px;
+    }
+
+    .flash-option-actions .flash-link {
+      min-height: 34px;
+      padding-block: 6px;
+    }
+
+    .firmware-link {
+      color: #9d3036;
+      border-color: rgba(255, 98, 104, 0.4);
+      box-shadow: inset 4px 0 0 var(--ember), 0 8px 20px rgba(255, 98, 104, 0.1);
+      font-family: "Avenir Next", "Trebuchet MS", Verdana, sans-serif;
+      cursor: pointer;
+    }
+
+    .firmware-dialog-panel {
+      width: min(880px, 100%);
+      max-height: calc(100svh - 40px);
+      overflow-y: auto;
+    }
+
+    .firmware-when {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .firmware-note {
+      padding: 14px 16px;
+      border: 1px solid rgba(5, 143, 153, 0.22);
+      border-left: 4px solid var(--cyan);
+      border-radius: 6px;
+      color: var(--ink-soft);
+      background: #eefafa;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .firmware-note.warning {
+      position: relative;
+      padding-left: 54px;
+      border: 2px solid #d63f4a;
+      color: var(--ink);
+      background: #ff9296;
+      box-shadow: 6px 6px 0 rgba(255, 213, 95, 0.9);
+    }
+
+    .firmware-note.warning::before {
+      content: "!";
+      position: absolute;
+      top: 14px;
+      left: 15px;
+      display: grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #9d3036;
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .firmware-note strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 0.82rem;
+    }
+
+    .firmware-note.warning strong {
+      font-size: 0.94rem;
+    }
+
+    .firmware-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+      counter-reset: firmware-step;
+    }
+
+    .firmware-step {
+      position: relative;
+      min-height: 84px;
+      padding: 13px 14px 13px 48px;
+      border: 1px solid rgba(5, 143, 153, 0.18);
+      border-radius: 6px;
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, 0.92);
+      font-size: 0.74rem;
+      font-weight: 700;
+      line-height: 1.38;
+      counter-increment: firmware-step;
+    }
+
+    .firmware-step::before {
+      content: counter(firmware-step);
+      position: absolute;
+      top: 13px;
+      left: 13px;
+      display: grid;
+      width: 25px;
+      height: 25px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--cyan-deep);
+      font-size: 0.68rem;
+      font-weight: 900;
+    }
+
+    .firmware-step strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ink);
+      font-size: 0.78rem;
+    }
+
+    .firmware-step code {
+      color: var(--cyan-deep);
+      font: 700 0.7rem/1.4 "Courier New", monospace;
+    }
+
+    .firmware-step a {
+      color: var(--cyan-deep);
+      font-weight: 900;
+      text-underline-offset: 2px;
+    }
+
+    .flash-command-panel .firmware-command-code::after {
+      content: "DFU / XVF3800";
+    }
+
+    .firmware-dialog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .firmware-dialog-panel {
+        max-height: calc(100svh - 20px);
+        padding: 22px 16px 18px;
+      }
+
+      .firmware-when,
+      .firmware-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .firmware-note,
+      .firmware-step {
+        font-size: 0.7rem;
+      }
+    }
+
+    .controls {
+      padding: 10px 7px;
+      border-color: rgba(5, 143, 153, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 14px 34px rgba(31, 115, 123, 0.15);
+    }
+
+    .dot {
+      border-color: rgba(5, 143, 153, 0.45);
+      border-radius: 50%;
+      background: rgba(31, 199, 209, 0.12);
+      transform: none;
+    }
+
+    .dot.active {
+      background: var(--ember);
+      box-shadow: 0 0 0 5px rgba(255, 98, 104, 0.12);
+      transform: scale(1.2);
+    }
+
+    .hud {
+      border-color: rgba(5, 143, 153, 0.2);
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: inset 4px 0 0 var(--ember), 0 14px 34px rgba(31, 115, 123, 0.14);
+    }
+
+    .hud strong,
+    .slide-title {
+      color: var(--cyan-deep);
+    }
+
+    .baymax-hero {
+      position: relative;
+      display: grid;
+      min-width: 0;
+      min-height: 430px;
+      grid-template-rows: 92px minmax(0, 1fr) auto;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid rgba(5, 143, 153, 0.2);
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, rgba(31, 199, 209, 0.12), transparent 45%),
+        #ffffff;
+      box-shadow: 14px 14px 0 rgba(255, 98, 104, 0.18), 0 28px 70px rgba(34, 109, 118, 0.18);
+    }
+
+    .baymax-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 34%;
+      height: 7px;
+      background: linear-gradient(90deg, var(--cyan), var(--sun), var(--ember));
+    }
+
+    .baymax-face {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 14px;
+    }
+
+    .baymax-face span {
+      width: 18px;
+      height: 25px;
+      border-radius: 50%;
+      background: #17353c;
+    }
+
+    .baymax-face i {
+      width: 74px;
+      height: 4px;
+      background: #17353c;
+    }
+
+    .baymax-device {
+      min-height: 0;
+      padding: 8px 24px 4px;
+    }
+
+    .baymax-device img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .baymax-hero figcaption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(5, 143, 153, 0.14);
+      color: var(--ink-soft);
+      background: #f4fcfc;
+      font-size: 0.68rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .baymax-hero figcaption strong {
+      color: var(--ink);
+      font-size: 0.9rem;
+      text-transform: none;
+    }
+
+    .tool-dialog {
+      background: rgba(219, 246, 246, 0.82);
+    }
+
+    .tool-dialog-panel {
+      border-color: rgba(5, 143, 153, 0.24);
+      background: #ffffff;
+      box-shadow: 0 34px 100px rgba(34, 109, 118, 0.25);
+    }
+
+    .tool-dialog-close {
+      border-color: rgba(5, 143, 153, 0.3);
+      color: var(--cyan-deep);
+      background: #ffffff;
+    }
+
+    .mcp-weather-preview {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+        linear-gradient(145deg, #1fc7d1, #42b98d 72%);
+      background-size: 32px 32px, 32px 32px, auto;
+    }
+
+    .mcp-reading {
+      color: #ffffff;
+      background: rgba(17, 65, 73, 0.72);
+    }
+
+    .mcp-endpoint {
+      background: rgba(31, 199, 209, 0.08);
+    }
+
+    .mcp-config {
+      color: var(--ink);
+      background: #eefafa;
+    }
+
+    .community-panel {
+      color: #ffffff;
+      border-color: rgba(255, 98, 104, 0.38);
+      background: linear-gradient(145deg, #ff7277, #ef4f61);
+      box-shadow: 8px 8px 0 rgba(31, 199, 209, 0.5);
+    }
+
+    .community-panel h3,
+    .community-panel p {
+      color: #ffffff;
+    }
+
+    .flash-ai-button {
+      border-color: rgba(5, 143, 153, 0.45);
+      color: var(--cyan-deep);
+      background: #eefafa;
+      box-shadow: inset 0 -2px 0 rgba(31, 199, 209, 0.2);
+    }
+
+    .flash-ai-button:hover,
+    .flash-ai-button:focus-visible,
+    .flash-ai-button[aria-expanded="true"] {
+      color: #ffffff;
+      background: var(--ember);
+      box-shadow: 3px 3px 0 var(--cyan);
+    }
+
+    .flash-command-panel {
+      border-color: rgba(5, 143, 153, 0.3);
+      background:
+        linear-gradient(rgba(31, 199, 209, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 199, 209, 0.05) 1px, transparent 1px),
+        #ffffff;
+      background-size: 28px 28px;
+      box-shadow: 12px 12px 0 rgba(255, 98, 104, 0.2), 0 34px 90px rgba(34, 109, 118, 0.22);
+    }
+
+    .flash-command-panel::before {
+      background: linear-gradient(90deg, var(--cyan), var(--sun), var(--ember));
+      box-shadow: none;
+    }
+
+    .flash-command-kicker {
+      color: var(--ember);
+    }
+
+    .flash-command-code {
+      border-color: rgba(5, 143, 153, 0.3);
+      border-left-color: var(--cyan);
+      background: #173d46;
+    }
+
+    .flash-command-code::after {
+      content: "CLI / ESPTOOL";
+      color: rgba(142, 238, 243, 0.8);
+    }
+
+    .flash-copy-button {
+      color: #ffffff;
+      border-color: var(--ember);
+      background: var(--ember);
+      box-shadow: 5px 5px 0 rgba(31, 199, 209, 0.72);
+      text-transform: none;
+    }
+
+    @keyframes baymaxDrift {
+      from { opacity: 0.65; transform: translateX(0); }
+      to { opacity: 1; transform: translateX(14px); }
+    }
+
+    html[data-screen="short-wide"] .baymax-hero {
+      min-height: 320px;
+      grid-template-rows: 68px minmax(0, 1fr) auto;
+    }
+
+    html[data-screen="short-wide"] .baymax-face span {
+      width: 14px;
+      height: 20px;
+    }
+
+    html[data-screen="short-wide"] .baymax-face i {
+      width: 58px;
+    }
+
+    html[data-screen="phone"] .baymax-hero {
+      min-height: 150px;
+      max-height: 176px;
+      grid-template-columns: 92px minmax(0, 1fr);
+      grid-template-rows: 1fr auto;
+      margin-top: 6px;
+      box-shadow: 7px 7px 0 rgba(255, 98, 104, 0.16);
+    }
+
+    html[data-screen="phone"] .baymax-face {
+      grid-column: 1;
+      grid-row: 1;
+      padding-top: 0;
+    }
+
+    html[data-screen="phone"] .baymax-face span {
+      width: 10px;
+      height: 14px;
+    }
+
+    html[data-screen="phone"] .baymax-face i {
+      width: 34px;
+      height: 3px;
+    }
+
+    html[data-screen="phone"] .baymax-device {
+      grid-column: 2;
+      grid-row: 1;
+      padding: 5px;
+    }
+
+    html[data-screen="phone"] .baymax-hero figcaption {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      padding: 7px 9px;
+      font-size: 0.5rem;
+    }
+
+    html[data-screen="phone"] .baymax-hero figcaption strong {
+      font-size: 0.68rem;
+    }
+
+    html[data-screen="phone"] .flash-option-actions {
+      grid-template-columns: 1fr;
+      gap: 5px;
+    }
+
+    html[data-screen="phone"] .flash-option-actions .flash-link {
+      min-width: 0;
+      padding-inline: 4px;
+      white-space: normal;
+    }
+
+    @media (min-width: 641px) {
+      #pair .slide-kicker {
+        margin-left: 120px;
+      }
+    }
+
+    html[data-screen="phone"] #pair .flash-option.app .flash-option-topline {
+      width: 100%;
+      grid-template-columns: minmax(0, 1fr) 22px;
+    }
+
+    html[data-screen="phone"] #pair .flash-option.app .flash-badge {
+      min-height: 20px;
+      padding: 3px 5px;
+      font-size: 0.48rem;
+    }
+
+    html[data-screen="phone"] #pair .flash-option.app .flash-ai-button {
+      width: 22px;
+      height: 20px;
+      font-size: 0.5rem;
+    }
+
+  </style>
+</head>
+<body>
+  <nav class="controls" aria-label="Slide navigation">
+    <button class="dot active" type="button" aria-label="Go to slide 1" data-slide="0"></button>
+    <button class="dot" type="button" aria-label="Go to slide 2" data-slide="1"></button>
+    <button class="dot" type="button" aria-label="Go to slide 3" data-slide="2"></button>
+    <button class="dot" type="button" aria-label="Go to slide 4" data-slide="3"></button>
+    <button class="dot" type="button" aria-label="Go to slide 5" data-slide="4"></button>
+    <button class="dot" type="button" aria-label="Go to slide 6" data-slide="5"></button>
+  </nav>
+
+  <div class="hud" aria-live="polite">
+    <strong><span id="current-slide">01</span> / 06</strong>
+    <span class="slide-title" id="current-title">Intro</span>
+  </div>
+
+  <main class="deck">
+    <section class="slide" id="intro" data-title="Intro">
+      <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
+      <div class="slide-inner split">
+        <div class="fade-up">
+          <h1 class="hero-title"><span>Give the body</span><span>a brain.</span></h1>
+          <p class="lead">Turn ReSpeaker Flex into a Baymax-like AI companion that listens, thinks, speaks, and acts.</p>
+          <div class="button-row">
+            <a class="button primary" href="https://www.agora.io/en/">Visit Agora</a>
+            <a class="button" href="https://www.seeedstudio.com/">Visit Seeed Studio</a>
+            <a class="button" href="https://robotfaire.org/">Visit Robotics Fair 2026</a>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><strong>Persona</strong><span>Your AI character</span></div>
+            <div class="metric"><strong>Voice</strong><span>Listen and speak</span></div>
+            <div class="metric"><strong>Body</strong><span>Real hardware</span></div>
+          </div>
+        </div>
+        <figure class="baymax-hero fade-up delay-1">
+          <div class="baymax-face" aria-hidden="true">
+            <span></span><i></i><span></span>
+          </div>
+          <div class="baymax-device">
+            <img src="3-respeaker-flex-xvf3800-circular-4_1_.jpg" alt="Seeed Studio ReSpeaker Flex with circular four-microphone array">
+          </div>
+          <figcaption><strong>ReSpeaker Flex</strong><span>4-mic array / XIAO ESP32-S3</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="slide" id="preparations" data-title="Preparations">
+      <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
+      <div class="slide-inner split">
+        <div class="fade-up">
+          <p class="slide-kicker">Section 2</p>
+          <h2>Prepare your workshop kit.</h2>
+          <p class="lead">Make sure the account, ReSpeaker Flex, and cable are ready before the live setup begins.</p>
+          <ul class="pill-list">
+            <li>Computer with internet access</li>
+            <li>Agora account for Console login</li>
+            <li>One ReSpeaker Flex with XIAO ESP32-S3</li>
+            <li>USB cable for device flashing</li>
+            <li>Access to Bot Station</li>
+          </ul>
+        </div>
+        <div class="panel panel-pad fade-up delay-1">
+          <p class="lead" style="font-size: 1.05rem; margin-top: 0;">Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act.</p>
+          <p class="lead" style="font-size: 1.05rem; margin-top: 14px;">Seeed Studio brings the ReSpeaker Flex, XIAO ESP32-S3, and circular four-microphone array together for responsive embodied voice AI.</p>
+          <div class="button-row">
+            <a class="button console-button" href="https://console.agora.io/">Agora Console</a>
+            <a class="button" href="https://www.seeedstudio.com/">Seeed Studio</a>
+            <a class="button" href="https://botstation.sg3.agoralab.co/">Bot Station</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="r1" data-title="Meet ReSpeaker">
+      <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
+      <div class="slide-inner split wide-visual">
+        <div class="image-stack fade-up">
+          <article class="media compact">
+            <img src="3-respeaker-flex-xvf3800-circular-4_1_.jpg" alt="ReSpeaker Flex with XVF3800 circular four-microphone array">
+            <div class="caption"><span>ReSpeaker Flex</span><span>Voice interface</span></div>
+          </article>
+          <article class="media compact">
+            <img src="3-respeaker-hardware-architecture.jpg" alt="ReSpeaker Flex hardware architecture diagram">
+            <div class="caption"><span>Hardware architecture</span><span>ESP32-S3 + XVF3800</span></div>
+          </article>
+        </div>
+        <div class="fade-up delay-1">
+          <p class="slide-kicker">Section 3</p>
+          <h2>Meet ReSpeaker Flex.</h2>
+          <p class="lead">ReSpeaker Flex gives your AI character a hardware body with far-field voice capture, Wi-Fi, and speaker output.</p>
+          <div class="button-map">
+            <div class="button-card"><strong>Reset</strong><span>Restart the ESP32-S3 and launch your bot.</span></div>
+            <div class="button-card"><strong>Boot / Pair</strong><span>Enter flashing or Wi-Fi pairing mode.</span></div>
+          </div>
+          <div class="button-row">
+            <a class="button" href="https://wiki.seeedstudio.com/respeaker_flex_xiao_introduction/">ReSpeaker documentation</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="bot" data-title="Create Bot">
+      <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
+      <div class="slide-inner split">
+        <div class="fade-up">
+          <p class="slide-kicker">Section 4</p>
+          <h2>Create your AI character.</h2>
+          <p class="lead">Use Bot Station to define how your hardware AI behaves, speaks, and greets users.</p>
+          <ol class="big-list">
+            <li>Open Bot Station and sign in with your Agora account.</li>
+            <li>Create a new bot and select your Agora project.</li>
+            <li>Configure persona, language, voice, prompt, and welcome message.</li>
+            <li>Save the bot, then preview the conversation in the web client.</li>
+          </ol>
+        </div>
+        <div class="fade-up delay-1">
+          <div class="image-stack">
+            <article class="media compact">
+              <img src="4-botstation-main.png" alt="Bot Station main page">
+              <div class="caption"><span>Bot Station</span><span>Login</span></div>
+            </article>
+            <article class="media compact">
+              <img src="4-botstation-add-new-bot.png" alt="Create a new bot in Bot Station">
+              <div class="caption"><span>Create new bot</span><span>CHARACTER SETUP</span></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="pair" data-title="Flash, Pair And Run">
+      <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
+      <div class="slide-inner">
+        <div class="fade-up">
+          <p class="slide-kicker">Section 5</p>
+          <h2>Flash, pair, and run.</h2>
+          <p class="lead">Choose a flasher, connect ReSpeaker Flex, pair the device, and activate your bot.</p>
+        </div>
+        <div class="flash-options fade-up delay-1" aria-label="ReSpeaker Flex flashing options">
+          <article class="flash-option web">
+            <div class="flash-option-copy">
+              <div class="flash-option-topline">
+                <h3>Web flasher</h3>
+                <span class="flash-badge">No install</span>
+              </div>
+              <p>Open ESPConnect in your browser, select the firmware, and flash directly.</p>
+            </div>
+            <a class="flash-link" href="https://thelastoutpostworkshop.github.io/ESPConnect/" target="_blank" rel="noreferrer">Open ESPConnect</a>
+          </article>
+          <article class="flash-option app">
+            <div class="flash-option-copy">
+              <div class="flash-option-topline">
+                <h3>esptool CLI</h3>
+                <span class="flash-badge">Download required</span>
+                <button class="flash-ai-button" id="flash-ai-button" type="button" aria-haspopup="dialog" aria-controls="flash-command-dialog" aria-expanded="false" aria-label="Show AI-friendly esptool command">AI</button>
+              </div>
+              <p>Install Espressif esptool for a fast local flashing workflow.</p>
+            </div>
+            <div class="flash-option-actions">
+              <a class="flash-link" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/" target="_blank" rel="noreferrer">esptool docs</a>
+              <button class="flash-link firmware-link" id="firmware-button" type="button" aria-haspopup="dialog" aria-controls="firmware-dialog" aria-expanded="false">I2S Firmware(Optional)</button>
+            </div>
+          </article>
+        </div>
+        <div class="timeline fade-up delay-2">
+          <div class="timeline-step"><strong>1</strong><span>In My Bots, choose Add device.</span></div>
+          <div class="timeline-step"><strong>2</strong><span>Choose ESPConnect or the esptool CLI.</span></div>
+          <div class="timeline-step"><strong>3</strong><span>Connect the board, select its port, and flash at <span class="code-chip">460800</span>.</span></div>
+          <div class="timeline-step"><strong>4</strong><span>Hold Boot / Pair, configure Wi-Fi, enter the spoken code, then press Reset.</span></div>
+        </div>
+        <div class="image-stack pairing-images">
+          <article class="media compact fade-up delay-1">
+            <img src="5-botstation-add-new-device.png" alt="Bot Station add new device page">
+            <div class="caption"><span>Add device</span><span>Flash</span></div>
+          </article>
+          <article class="media compact fade-up delay-2">
+            <img src="5-botstation-add-new-device-pair.png" alt="ReSpeaker Flex local pairing page">
+            <div class="caption"><span>Pairing page</span><span>Hotspot</span></div>
+          </article>
+          <article class="media compact fade-up delay-3">
+            <img src="5-botstation-add-new-device-pair-code.png" alt="Pairing code in Bot Station">
+            <div class="caption"><span>Pairing code</span><span>Reset to run</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="explore" data-title="Explore More">
+      <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
+      <div class="slide-inner">
+        <div class="fade-up">
+          <p class="slide-kicker">Section 6</p>
+          <h2>Explore more.</h2>
+          <p class="lead">Once your voice device works, customize the experience and build your own hardware AI applications.</p>
+        </div>
+        <div class="explore-layout">
+          <div class="explore-grid fade-up delay-1">
+            <a class="explore-card explore-card-link" href="https://github.com/qiuyanli1990/respeaker-flex-circle-Agora-mybot" target="_blank" rel="noreferrer">
+              <span class="card-action">Open project</span>
+              <div class="icon">01</div>
+              <h3>Source code</h3>
+              <p>Clone the open-source firmware and build your own bot image.</p>
+            </a>
+            <article class="explore-card">
+              <div class="icon">02</div>
+              <h3>Voice locking</h3>
+              <p>Explore identity-aware interactions for personalized device experiences.</p>
+            </article>
+            <article class="explore-card">
+              <div class="icon">03</div>
+              <h3 class="explore-card-title">Voice clone <span class="coming-soon">Coming soon</span></h3>
+              <p>Experiment with custom voice output when supported in your environment.</p>
+            </article>
+            <article class="explore-card tool-action-card" id="tool-action-card" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="mcp-weather-dialog">
+              <span class="card-action">View sample</span>
+              <div class="icon">04</div>
+              <h3>Tool actions</h3>
+              <p>Add MCP tools so your device can trigger external services.</p>
+            </article>
+            <aside class="community-panel fade-up delay-2" aria-label="Join the Agora Discord community">
+              <div class="community-copy">
+                <span class="community-kicker">Discord</span>
+                <h3>Build together.</h3>
+                <p>Meet other voice AI builders in Agora Discord.</p>
+              </div>
+              <div class="community-qr">
+                <img src="join-discord-agora-qr.jpg" alt="QR code to join the Agora Discord community">
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="tool-dialog" id="mcp-weather-dialog" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="mcp-weather-title">
+    <div class="tool-dialog-panel">
+      <button class="tool-dialog-close" id="tool-dialog-close" type="button" aria-label="Close MCP sample">&times;</button>
+      <section class="mcp-weather-preview" aria-label="Example weather tool response">
+        <span class="mcp-preview-label">Sample MCP response</span>
+        <div class="mcp-reading">
+          <strong>62 F</strong>
+          <span>Seattle, WA / Light rain likely</span>
+          <div class="mcp-reading-grid">
+            <div><span>Forecast</span><strong>5 periods</strong></div>
+            <div><span>Alerts</span><strong>0 active</strong></div>
+          </div>
+        </div>
+      </section>
+      <div class="mcp-dialog-copy">
+        <span class="mcp-dialog-kicker">Official MCP quickstart</span>
+        <h2 id="mcp-weather-title">Weather MCP, free to test.</h2>
+        <p>The server runs locally over stdio and uses free public weather data. A voice agent can request a forecast or active alerts, then speak the result.</p>
+        <div class="mcp-access" aria-label="Cost and connection summary">
+          <span>Free public data</span>
+          <span>No API key currently</span>
+          <span>Local stdio</span>
+        </div>
+        <div class="mcp-endpoints">
+          <div class="mcp-endpoint">
+            <span>MCP transport</span>
+            <code>stdio: node .../weather/build/index.js</code>
+            <p>Runs as a local process; there is no hosted MCP URL or service fee.</p>
+          </div>
+          <div class="mcp-endpoint">
+            <span>Weather data endpoint</span>
+            <code>https://api.weather.gov</code>
+            <p>Free NWS open data. A User-Agent and reasonable rate limits apply. <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noreferrer">NWS policy</a></p>
+          </div>
+        </div>
+        <div class="mcp-tool-list">
+          <div class="mcp-tool">
+            <code>get_forecast</code>
+            <p>Returns a weather forecast for a latitude and longitude.</p>
+          </div>
+          <div class="mcp-tool">
+            <code>get_alerts</code>
+            <p>Returns active weather alerts for a US state code.</p>
+          </div>
+        </div>
+        <div class="mcp-config">
+          <div class="mcp-config-header">
+            <span>Client config</span>
+            <code>npm install &amp;&amp; npm run build</code>
+          </div>
+          <pre><code>{
+  "mcpServers": {
+    "weather": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/weather/build/index.js"]
+    }
+  }
+}</code></pre>
+        </div>
+        <div class="mcp-dialog-actions">
+          <a class="button primary" href="https://github.com/modelcontextprotocol/quickstart-resources/tree/main/weather-server-typescript" target="_blank" rel="noreferrer">View TypeScript sample</a>
+          <a class="button" href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank" rel="noreferrer">Official tutorial</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-dialog flash-command-dialog" id="flash-command-dialog" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="flash-command-title">
+    <div class="tool-dialog-panel flash-command-panel">
+      <button class="tool-dialog-close" id="flash-command-close" type="button" aria-label="Close flash command">&times;</button>
+      <span class="flash-command-kicker">AI-ready terminal command</span>
+      <h2 id="flash-command-title">Flash ReSpeaker with esptool.</h2>
+      <p>Update the serial port and firmware image path, then run this command from your terminal.</p>
+      <div class="flash-command-code">
+        <pre><code id="flash-command">esptool \
+  -p /dev/cu.wchusbserial1320 \
+  -b 460800 \
+  write_flash --erase-all \
+  0x0 /path/to/respeaker-flex-agora-mybot.bin</code></pre>
+      </div>
+      <div class="flash-command-actions">
+        <span class="flash-command-hint">Replace example paths before running</span>
+        <button class="flash-copy-button" id="flash-copy-button" type="button">Copy command</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-dialog flash-command-dialog" id="firmware-dialog" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="firmware-dialog-title">
+    <div class="tool-dialog-panel flash-command-panel firmware-dialog-panel">
+      <button class="tool-dialog-close" id="firmware-dialog-close" type="button" aria-label="Close I2S firmware guide">&times;</button>
+      <span class="flash-command-kicker">Optional audio interface update</span>
+      <h2 id="firmware-dialog-title">Switch XVF3800 to I2S mode.</h2>
+      <p>The XIAO ESP32-S3 exchanges voice data with the XVF3800 over I2S. This update changes the microphone array from its factory USB mode to the I2S mode used by this workshop.</p>
+      <div class="firmware-when">
+        <div class="firmware-note warning">
+          <strong>Flash it when audio is noise</strong>
+          Use this image if the device produces loud static or noise instead of clear microphone audio, or if the XVF3800 is still running its factory USB firmware.
+        </div>
+        <div class="firmware-note">
+          <strong>Skip it when audio is clean</strong>
+          This is not the Agora application firmware. If your ReSpeaker already captures clean audio over I2S, leave the XVF3800 firmware unchanged.
+        </div>
+      </div>
+      <div class="firmware-steps" aria-label="I2S firmware flashing steps">
+        <div class="firmware-step"><strong>Connect the XMOS port</strong>Use the USB-C port near the RST button, not the XIAO USB-C port.</div>
+        <div class="firmware-step"><strong>Install DFU Util</strong>Windows: <a href="http://dfu-util.sourceforge.net/" target="_blank" rel="noreferrer">download 0.11</a>, extract <code>win64</code>, and add it to <code>Path</code>.<br>macOS: <code>brew install dfu-util</code><br>Linux: <code>sudo apt install dfu-util</code></div>
+        <div class="firmware-step"><strong>Check the device</strong>Run <code>dfu-util -l</code>. If it is missing, hold Boot while reconnecting power to enter Safe Mode. On Windows, install the WinUSB driver with Zadig if access fails.</div>
+        <div class="firmware-step"><strong>Download and flash</strong>Download the I2S image, update the path in the command, and wait for the board to restart.</div>
+      </div>
+      <div class="flash-command-code firmware-command-code">
+        <pre><code>dfu-util -R -e -a 1 -D /path/to/respeaker_flex_i2s_c16k2ch_v1.0.0.bin</code></pre>
+      </div>
+      <div class="firmware-dialog-actions">
+        <a class="button primary" href="https://github.com/respeaker/reSpeaker_Flex/raw/refs/heads/main/xmos_firmwares/i2s/respeaker_flex_i2s_c16k2ch_v1.0.0.bin" download>Download I2S firmware</a>
+        <a class="button" href="https://wiki.seeedstudio.com/respeaker_flex_introduction/#update-firmware" target="_blank" rel="noreferrer">Official DFU guide</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-stage" id="image-stage" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Workshop screenshot">
+    <img class="image-stage-logo" src="Agora_Logo.png" alt="Agora logo">
+    <button class="image-stage-button image-stage-close" id="image-stage-close" type="button" aria-label="Close screenshot">&times;</button>
+    <button class="image-stage-button image-stage-previous" id="image-stage-previous" type="button" aria-label="Previous screenshot">&larr;</button>
+    <figure class="image-stage-frame">
+      <img class="image-stage-image" id="image-stage-image" alt="">
+      <figcaption class="image-stage-caption">
+        <span id="image-stage-title"></span>
+        <strong id="image-stage-count"></strong>
+      </figcaption>
+    </figure>
+    <button class="image-stage-button image-stage-next" id="image-stage-next" type="button" aria-label="Next screenshot">&rarr;</button>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dots = Array.from(document.querySelectorAll('.dot'));
+    const currentSlide = document.getElementById('current-slide');
+    const currentTitle = document.getElementById('current-title');
+    const imageStage = document.getElementById('image-stage');
+    const imageStageImage = document.getElementById('image-stage-image');
+    const imageStageTitle = document.getElementById('image-stage-title');
+    const imageStageCount = document.getElementById('image-stage-count');
+    const imageStageClose = document.getElementById('image-stage-close');
+    const imageStagePrevious = document.getElementById('image-stage-previous');
+    const imageStageNext = document.getElementById('image-stage-next');
+    const toolActionCard = document.getElementById('tool-action-card');
+    const toolDialog = document.getElementById('mcp-weather-dialog');
+    const toolDialogClose = document.getElementById('tool-dialog-close');
+    const flashAiButton = document.getElementById('flash-ai-button');
+    const flashDialog = document.getElementById('flash-command-dialog');
+    const flashDialogClose = document.getElementById('flash-command-close');
+    const flashCommand = document.getElementById('flash-command');
+    const flashCopyButton = document.getElementById('flash-copy-button');
+    const firmwareButton = document.getElementById('firmware-button');
+    const firmwareDialog = document.getElementById('firmware-dialog');
+    const firmwareDialogClose = document.getElementById('firmware-dialog-close');
+    let activeIndex = 0;
+    let isMoving = false;
+    let activeMediaIndex = -1;
+    let stageTimer;
+    let copyFeedbackTimer;
+    let wheelLocked = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    function formatIndex(index) {
+      return String(index + 1).padStart(2, '0');
+    }
+
+    function isToolDialogOpen() {
+      return toolDialog.classList.contains('is-open');
+    }
+
+    function isFlashDialogOpen() {
+      return flashDialog.classList.contains('is-open');
+    }
+
+    function isFirmwareDialogOpen() {
+      return firmwareDialog.classList.contains('is-open');
+    }
+
+    function isDialogOpen() {
+      return isToolDialogOpen() || isFlashDialogOpen() || isFirmwareDialogOpen();
+    }
+
+    function updateDialogBodyLock() {
+      document.body.classList.toggle('tool-dialog-open', isDialogOpen());
+    }
+
+    function openToolDialog() {
+      if (activeMediaIndex >= 0) resetImageStage();
+      toolDialog.classList.add('is-open');
+      toolDialog.setAttribute('aria-hidden', 'false');
+      updateDialogBodyLock();
+      toolDialogClose.focus({ preventScroll: true });
+    }
+
+    function closeToolDialog(restoreFocus = true) {
+      toolDialog.classList.remove('is-open');
+      toolDialog.setAttribute('aria-hidden', 'true');
+      updateDialogBodyLock();
+      if (restoreFocus) toolActionCard.focus({ preventScroll: true });
+    }
+
+    function openFlashDialog() {
+      if (activeMediaIndex >= 0) resetImageStage();
+      flashDialog.classList.add('is-open');
+      flashDialog.setAttribute('aria-hidden', 'false');
+      flashAiButton.setAttribute('aria-expanded', 'true');
+      updateDialogBodyLock();
+      flashDialogClose.focus({ preventScroll: true });
+    }
+
+    function closeFlashDialog(restoreFocus = true) {
+      flashDialog.classList.remove('is-open');
+      flashDialog.setAttribute('aria-hidden', 'true');
+      flashAiButton.setAttribute('aria-expanded', 'false');
+      window.clearTimeout(copyFeedbackTimer);
+      flashCopyButton.textContent = 'Copy command';
+      updateDialogBodyLock();
+      if (restoreFocus) flashAiButton.focus({ preventScroll: true });
+    }
+
+    function openFirmwareDialog() {
+      if (activeMediaIndex >= 0) resetImageStage();
+      firmwareDialog.classList.add('is-open');
+      firmwareDialog.setAttribute('aria-hidden', 'false');
+      firmwareButton.setAttribute('aria-expanded', 'true');
+      updateDialogBodyLock();
+      firmwareDialogClose.focus({ preventScroll: true });
+    }
+
+    function closeFirmwareDialog(restoreFocus = true) {
+      firmwareDialog.classList.remove('is-open');
+      firmwareDialog.setAttribute('aria-hidden', 'true');
+      firmwareButton.setAttribute('aria-expanded', 'false');
+      updateDialogBodyLock();
+      if (restoreFocus) firmwareButton.focus({ preventScroll: true });
+    }
+
+    function fallbackCopyText(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      let copied = false;
+
+      try {
+        textarea.select();
+        copied = document.execCommand('copy');
+      } finally {
+        textarea.remove();
+        flashCopyButton.focus({ preventScroll: true });
+      }
+
+      return copied;
+    }
+
+    async function copyFlashCommand() {
+      const text = flashCommand.textContent.trim();
+      let copied = false;
+
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch {
+          copied = fallbackCopyText(text);
+        }
+      } else {
+        copied = fallbackCopyText(text);
+      }
+
+      window.clearTimeout(copyFeedbackTimer);
+      flashCopyButton.textContent = copied ? 'Copied' : 'Copy failed';
+      copyFeedbackTimer = window.setTimeout(() => {
+        flashCopyButton.textContent = 'Copy command';
+      }, 1800);
+    }
+
+    function getSlideMedia(index = activeIndex) {
+      return Array.from(slides[index]?.querySelectorAll('.media') || []);
+    }
+
+    function resetImageStage() {
+      window.clearTimeout(stageTimer);
+      activeMediaIndex = -1;
+      imageStage.classList.remove('is-open', 'is-closing', 'is-switching', 'is-previous');
+      imageStage.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('image-stage-open');
+    }
+
+    function showMedia(index, direction = 'next') {
+      const mediaItems = getSlideMedia();
+      const media = mediaItems[index];
+      if (!media) return;
+
+      const image = media.querySelector('img');
+      const captionParts = Array.from(media.querySelectorAll('.caption span'))
+        .map((part) => part.textContent.trim())
+        .filter(Boolean);
+
+      activeMediaIndex = index;
+      imageStageImage.src = image.currentSrc || image.src;
+      imageStageImage.alt = image.alt;
+      imageStageTitle.textContent = captionParts.join(' / ') || image.alt;
+      imageStageCount.textContent = `${formatIndex(index)} / ${formatIndex(mediaItems.length - 1)}`;
+      imageStage.classList.remove('is-closing', 'is-switching', 'is-previous');
+      if (direction === 'previous') imageStage.classList.add('is-previous');
+      imageStage.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('image-stage-open');
+
+      requestAnimationFrame(() => {
+        imageStage.classList.add('is-open', 'is-switching');
+        window.clearTimeout(stageTimer);
+        stageTimer = window.setTimeout(() => imageStage.classList.remove('is-switching'), 360);
+      });
+
+      imageStageClose.focus({ preventScroll: true });
+    }
+
+    function closeMedia(onClosed, immediate = false) {
+      window.clearTimeout(stageTimer);
+      if (activeMediaIndex < 0) {
+        if (onClosed) onClosed();
+        return;
+      }
+
+      activeMediaIndex = -1;
+      if (immediate) {
+        resetImageStage();
+        if (onClosed) onClosed();
+        return;
+      }
+
+      imageStage.classList.remove('is-open', 'is-switching');
+      imageStage.classList.add('is-closing');
+      stageTimer = window.setTimeout(() => {
+        resetImageStage();
+        if (onClosed) onClosed();
+      }, 190);
+    }
+
+    function setActive(index) {
+      activeIndex = Math.max(0, Math.min(index, slides.length - 1));
+      currentSlide.textContent = formatIndex(activeIndex);
+      currentTitle.textContent = slides[activeIndex].dataset.title;
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle('active', dotIndex === activeIndex);
+        dot.setAttribute('aria-current', dotIndex === activeIndex ? 'true' : 'false');
+      });
+    }
+
+    function updateScreenMode() {
+      document.documentElement.dataset.screen = window.detectWorkshopScreen();
+    }
+
+    function goToSlide(index) {
+      if (isToolDialogOpen()) closeToolDialog(false);
+      if (isFlashDialogOpen()) closeFlashDialog(false);
+      if (isFirmwareDialogOpen()) closeFirmwareDialog(false);
+      if (activeMediaIndex >= 0) resetImageStage();
+      const nextIndex = Math.max(0, Math.min(index, slides.length - 1));
+      if (nextIndex === activeIndex && isMoving) return;
+      isMoving = true;
+      setActive(nextIndex);
+      slides[nextIndex].scrollIntoView({ behavior: 'auto', block: 'start' });
+      window.setTimeout(() => { isMoving = false; }, 240);
+    }
+
+    function navigate(direction) {
+      const mediaItems = getSlideMedia();
+
+      if (activeMediaIndex >= 0) {
+        if (direction < 0) {
+          closeMedia();
+          return;
+        }
+
+        const nextMediaIndex = activeMediaIndex + direction;
+        if (nextMediaIndex >= 0 && nextMediaIndex < mediaItems.length) {
+          showMedia(nextMediaIndex, 'next');
+          return;
+        }
+
+        closeMedia(() => goToSlide(activeIndex + 1));
+        return;
+      }
+
+      if (direction > 0) {
+        if (mediaItems.length) {
+          showMedia(0, 'next');
+        } else {
+          goToSlide(activeIndex + 1);
+        }
+        return;
+      }
+
+      const previousIndex = activeIndex - 1;
+      if (previousIndex < 0) return;
+      goToSlide(previousIndex);
+    }
+
+    function shouldIgnoreKey(event) {
+      const tag = event.target.tagName;
+      return event.altKey || event.ctrlKey || event.metaKey || tag === 'INPUT' || tag === 'TEXTAREA' || event.target.isContentEditable;
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (shouldIgnoreKey(event)) return;
+
+      const key = event.key.toLowerCase();
+      const nextKeys = ['arrowdown', 'arrowright', 's', 'd', 'pagedown'];
+      const previousKeys = ['arrowup', 'arrowleft', 'w', 'a', 'pageup'];
+
+      if (isToolDialogOpen()) {
+        if (key === 'escape') {
+          event.preventDefault();
+          closeToolDialog();
+        } else if (key === ' ' || nextKeys.includes(key) || previousKeys.includes(key) || (key >= '1' && key <= String(slides.length))) {
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (isFlashDialogOpen()) {
+        if (key === 'escape') {
+          event.preventDefault();
+          closeFlashDialog();
+        } else if (event.target.tagName !== 'BUTTON' && (key === ' ' || nextKeys.includes(key) || previousKeys.includes(key) || (key >= '1' && key <= String(slides.length)))) {
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (isFirmwareDialogOpen()) {
+        if (key === 'escape') {
+          event.preventDefault();
+          closeFirmwareDialog();
+        } else if (event.target.tagName !== 'BUTTON' && event.target.tagName !== 'A' && (key === ' ' || nextKeys.includes(key) || previousKeys.includes(key) || (key >= '1' && key <= String(slides.length)))) {
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (key >= '1' && key <= String(slides.length)) {
+        event.preventDefault();
+        goToSlide(Number(key) - 1);
+        return;
+      }
+
+      if (key === ' ') {
+        event.preventDefault();
+        navigate(event.shiftKey ? -1 : 1);
+        return;
+      }
+
+      if (nextKeys.includes(key)) {
+        event.preventDefault();
+        navigate(1);
+        return;
+      }
+
+      if (previousKeys.includes(key)) {
+        event.preventDefault();
+        navigate(-1);
+        return;
+      }
+
+      if (key === 'escape' && activeMediaIndex >= 0) {
+        event.preventDefault();
+        closeMedia();
+      }
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => goToSlide(Number(dot.dataset.slide)));
+    });
+
+    slides.forEach((slide, slideIndex) => {
+      getSlideMedia(slideIndex).forEach((media, mediaIndex) => {
+        media.tabIndex = 0;
+        media.setAttribute('role', 'button');
+        media.setAttribute('aria-label', `Enlarge ${media.querySelector('img').alt}`);
+        media.addEventListener('click', () => {
+          setActive(slideIndex);
+          showMedia(mediaIndex);
+        });
+        media.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setActive(slideIndex);
+            showMedia(mediaIndex);
+          }
+        });
+      });
+    });
+
+    imageStageClose.addEventListener('click', () => closeMedia());
+    imageStagePrevious.addEventListener('click', () => navigate(-1));
+    imageStageNext.addEventListener('click', () => navigate(1));
+
+    toolActionCard.addEventListener('click', openToolDialog);
+    toolActionCard.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        openToolDialog();
+      }
+    });
+    toolDialogClose.addEventListener('click', () => closeToolDialog());
+    toolDialog.addEventListener('click', (event) => {
+      if (event.target === toolDialog) closeToolDialog();
+    });
+
+    flashAiButton.addEventListener('click', openFlashDialog);
+    flashAiButton.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        openFlashDialog();
+      }
+    });
+    flashDialogClose.addEventListener('click', () => closeFlashDialog());
+    flashCopyButton.addEventListener('click', copyFlashCommand);
+    flashDialog.addEventListener('click', (event) => {
+      if (event.target === flashDialog) closeFlashDialog();
+    });
+
+    firmwareButton.addEventListener('click', openFirmwareDialog);
+    firmwareDialogClose.addEventListener('click', () => closeFirmwareDialog());
+    firmwareDialog.addEventListener('click', (event) => {
+      if (event.target === firmwareDialog) closeFirmwareDialog();
+    });
+
+    document.addEventListener('wheel', (event) => {
+      if (isDialogOpen()) {
+        event.preventDefault();
+        return;
+      }
+      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      if (Math.abs(delta) < 12) return;
+      event.preventDefault();
+      if (wheelLocked) return;
+      wheelLocked = true;
+      navigate(delta > 0 ? 1 : -1);
+      window.setTimeout(() => { wheelLocked = false; }, 700);
+    }, { passive: false });
+
+    document.addEventListener('touchstart', (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+      touchStartY = event.changedTouches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (event) => {
+      if (isDialogOpen()) return;
+      const deltaX = touchStartX - event.changedTouches[0].clientX;
+      const deltaY = touchStartY - event.changedTouches[0].clientY;
+      const dominantDelta = Math.abs(deltaY) >= Math.abs(deltaX) ? deltaY : deltaX;
+      if (Math.abs(dominantDelta) >= 48) navigate(dominantDelta > 0 ? 1 : -1);
+    }, { passive: true });
+
+    window.addEventListener('resize', updateScreenMode);
+    window.addEventListener('orientationchange', updateScreenMode);
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (visible) {
+        setActive(slides.indexOf(visible.target));
+      }
+    }, { threshold: [0.55, 0.75] });
+
+    slides.forEach((slide) => observer.observe(slide));
+  </script>
+</body>
+</html>
