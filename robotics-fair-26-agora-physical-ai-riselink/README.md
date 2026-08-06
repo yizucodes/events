@@ -102,6 +102,12 @@ Use Bot Station to define how your physical AI behaves, speaks, and greets users
 - **Filler words:** add short phrases for moments when a response is still being generated.
 - **MCP server:** optionally connect tools that can retrieve data or perform actions.
 
+Example persona:
+
+```text
+ A warm, helpful workshop assistant who gives concise, practical instructions and encourages hands-on exploration. Uses approachable language and short sentences.
+```
+
 Example system prompt:
 
 ```text
@@ -142,9 +148,25 @@ Open your bot in **My Bots**, choose **Add device**, then select one of the two 
 
 The [web flash tool](https://connect.aclsemi.com/download) runs in your browser. It does not require an app download or installation.
 
+1. Go to [home dashboard](https://botstation.sg3.agoralab.co/agents])
+2. **Devices** --> **Pair a new device** --> **Select R1** --> **Download**
+
+![Add a new device](5-botstation-add-new-device.png)
+
+3. You should see the `beken_r1_all-app_sg3.bin` R1 firmware image that will be used to flash the device.
+
 ### Option B: Desktop Flasher
 
 Download the dedicated GUI app or CLI from the [Beken flashing tools page](https://dl.bekencorp.com/tools/bkfil/v4) for a local flashing workflow.
+
+### Flash the Firmware
+
+1. Connect the R1 to your computer with the USB cable.
+2. Select the correct COM or serial port.
+3. Set the baud rate to `115200`.
+4. Select the R1 firmware image and start flashing.
+5. Press Reset when instructed.
+6. Wait for the flashing process to finish successfully.
 
 Confirm that the CLI is available:
 
@@ -167,16 +189,7 @@ bk_loader download \
 
 The deck also provides this command from the small **AI** button beside **Download required**, with a button for copying it.
 
-### Flash the Firmware
 
-1. Connect the R1 to your computer with the USB cable.
-2. Select the correct COM or serial port.
-3. Set the baud rate to `115200`.
-4. Select the R1 firmware image and start flashing.
-5. Press Reset when instructed.
-6. Wait for the flashing process to finish successfully.
-
-![Add a new device](5-botstation-add-new-device.png)
 
 ### Pair and Activate
 
