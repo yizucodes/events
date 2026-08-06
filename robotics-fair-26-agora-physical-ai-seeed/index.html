@@ -3608,6 +3608,20 @@
         linear-gradient(145deg, rgba(31, 199, 209, 0.12), transparent 45%),
         #ffffff;
       box-shadow: 14px 14px 0 rgba(255, 98, 104, 0.18), 0 28px 70px rgba(34, 109, 118, 0.18);
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .baymax-hero:hover,
+    .baymax-hero:focus-visible {
+      outline: none;
+      transform: translateY(-3px);
+      box-shadow: 14px 17px 0 rgba(255, 98, 104, 0.18), 0 32px 76px rgba(34, 109, 118, 0.22);
+    }
+
+    .baymax-hero:focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 4px;
     }
 
     .baymax-hero::before {
@@ -3641,15 +3655,59 @@
     }
 
     .baymax-device {
+      position: relative;
       min-height: 0;
       padding: 8px 24px 4px;
     }
 
-    .baymax-device img {
+    .baymax-device img,
+    .baymax-device video {
       width: 100%;
       height: 100%;
       object-fit: contain;
+    }
+
+    .baymax-device img {
       mix-blend-mode: multiply;
+    }
+
+    .baymax-device video {
+      display: none;
+      background: #061419;
+    }
+
+    .baymax-device::after {
+      content: "\25B6";
+      position: absolute;
+      right: 36px;
+      bottom: 18px;
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid rgba(5, 143, 153, 0.28);
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--ember);
+      box-shadow: 0 8px 24px rgba(255, 98, 104, 0.3);
+      font-size: 0.82rem;
+      line-height: 1;
+      text-indent: 2px;
+      transition: transform 180ms ease;
+    }
+
+    .baymax-hero:hover .baymax-device::after,
+    .baymax-hero:focus-visible .baymax-device::after {
+      transform: scale(1.08);
+    }
+
+    .baymax-hero.is-playing .baymax-device img,
+    .baymax-hero.is-playing .baymax-device::after {
+      display: none;
+    }
+
+    .baymax-hero.is-playing .baymax-device video {
+      display: block;
     }
 
     .baymax-hero figcaption {
@@ -3823,6 +3881,14 @@
       grid-column: 2;
       grid-row: 1;
       padding: 5px;
+    }
+
+    html[data-screen="phone"] .baymax-device::after {
+      right: 10px;
+      bottom: 10px;
+      width: 30px;
+      height: 30px;
+      font-size: 0.65rem;
     }
 
     html[data-screen="phone"] .baymax-hero figcaption {
@@ -4315,6 +4381,99 @@
       }
     }
 
+    .workshop-flow {
+      display: grid;
+      grid-column: 1 / -1;
+      align-items: center;
+      margin-top: 4px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(5, 143, 153, 0.22);
+    }
+
+    .workshop-flow ol {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .workshop-flow li {
+      position: relative;
+      min-width: 0;
+      min-height: 54px;
+      padding: 9px 10px;
+      overflow: hidden;
+      border: 1px solid rgba(5, 143, 153, 0.16);
+      border-top: 3px solid var(--cyan);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .workshop-flow li:nth-child(2),
+    .workshop-flow li:nth-child(5) {
+      border-top-color: var(--ember);
+    }
+
+    .workshop-flow li:nth-child(3),
+    .workshop-flow li:nth-child(6) {
+      border-top-color: var(--moss);
+    }
+
+    .workshop-flow strong,
+    .workshop-flow span {
+      display: block;
+    }
+
+    .workshop-flow strong {
+      color: var(--cyan-deep);
+      font-size: 0.58rem;
+    }
+
+    .workshop-flow span {
+      margin-top: 3px;
+      color: var(--ink);
+      font-size: 0.7rem;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    html[data-screen="short-wide"] .workshop-flow {
+      padding-top: 10px;
+    }
+
+    html[data-screen="short-wide"] .workshop-flow li {
+      min-height: 46px;
+      padding: 7px 9px;
+    }
+
+    html[data-screen="phone"] .workshop-flow {
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin-top: 9px;
+      padding-top: 9px;
+    }
+
+    html[data-screen="phone"] .workshop-flow ol {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    html[data-screen="phone"] .workshop-flow li {
+      min-height: 43px;
+      padding: 5px 6px;
+    }
+
+    html[data-screen="phone"] .workshop-flow strong {
+      font-size: 0.48rem;
+    }
+
+    html[data-screen="phone"] .workshop-flow span {
+      margin-top: 2px;
+      font-size: 0.56rem;
+    }
+
   </style>
 </head>
 <body>
@@ -4350,15 +4509,26 @@
             <div class="metric"><strong>Body</strong><span>Real hardware</span></div>
           </div>
         </div>
-        <figure class="baymax-hero fade-up delay-1">
+        <figure class="baymax-hero fade-up delay-1" id="baymax-hero" role="button" tabindex="0" aria-label="Play Life Advice From Baymax">
           <div class="baymax-face" aria-hidden="true">
             <span></span><i></i><span></span>
           </div>
           <div class="baymax-device">
             <img src="3-respeaker-flex-xvf3800-circular-4_1_.jpg" alt="Seeed Studio ReSpeaker Flex with circular four-microphone array">
+            <video id="baymax-video" src="Life%20Advice%20From%20Baymax.mp4" preload="metadata" playsinline aria-label="Life Advice From Baymax video"></video>
           </div>
           <figcaption><strong>ReSpeaker Flex</strong><span>4-mic array / XIAO ESP32-S3</span></figcaption>
         </figure>
+        <section class="workshop-flow fade-up delay-2" aria-label="Workshop flow">
+          <ol>
+            <li><strong>01</strong><span>Introduction</span></li>
+            <li><strong>02</strong><span>Prepare</span></li>
+            <li><strong>03</strong><span>Meet ReSpeaker</span></li>
+            <li><strong>04</strong><span>Create character</span></li>
+            <li><strong>05</strong><span>Flash + pair + run</span></li>
+            <li><strong>06</strong><span>Explore more</span></li>
+          </ol>
+        </section>
       </div>
     </section>
 
@@ -4784,6 +4954,8 @@ ls /dev/ttyACM* /dev/ttyUSB*</code>
     const debugToolsDialogClose = document.getElementById('debug-tools-close');
     const debugCommand = document.getElementById('debug-command');
     const debugCopyButton = document.getElementById('debug-copy-button');
+    const baymaxHero = document.getElementById('baymax-hero');
+    const baymaxVideo = document.getElementById('baymax-video');
     let activeIndex = 0;
     let isMoving = false;
     let activeMediaIndex = -1;
@@ -5021,12 +5193,37 @@ ls /dev/ttyACM* /dev/ttyUSB*</code>
 
     function setActive(index) {
       activeIndex = Math.max(0, Math.min(index, slides.length - 1));
+      if (activeIndex !== 0) resetBaymaxVideo();
       currentSlide.textContent = formatIndex(activeIndex);
       currentTitle.textContent = slides[activeIndex].dataset.title;
       dots.forEach((dot, dotIndex) => {
         dot.classList.toggle('active', dotIndex === activeIndex);
         dot.setAttribute('aria-current', dotIndex === activeIndex ? 'true' : 'false');
       });
+    }
+
+    function resetBaymaxVideo() {
+      baymaxVideo.pause();
+      baymaxVideo.currentTime = 0;
+      baymaxHero.classList.remove('is-playing');
+      baymaxHero.setAttribute('aria-label', 'Play Life Advice From Baymax');
+    }
+
+    async function toggleBaymaxVideo() {
+      if (baymaxHero.classList.contains('is-playing')) {
+        resetBaymaxVideo();
+        return;
+      }
+
+      baymaxHero.classList.add('is-playing');
+      baymaxHero.setAttribute('aria-label', 'Stop Life Advice From Baymax');
+      baymaxVideo.currentTime = 0;
+
+      try {
+        await baymaxVideo.play();
+      } catch {
+        resetBaymaxVideo();
+      }
     }
 
     function updateScreenMode() {
@@ -5165,6 +5362,16 @@ ls /dev/ttyACM* /dev/ttyUSB*</code>
     dots.forEach((dot) => {
       dot.addEventListener('click', () => goToSlide(Number(dot.dataset.slide)));
     });
+
+    baymaxHero.addEventListener('click', toggleBaymaxVideo);
+    baymaxHero.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleBaymaxVideo();
+      }
+    });
+    baymaxVideo.addEventListener('ended', resetBaymaxVideo);
 
     slides.forEach((slide, slideIndex) => {
       getSlideMedia(slideIndex).forEach((media, mediaIndex) => {
