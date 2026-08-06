@@ -235,7 +235,7 @@ Once ReSpeaker Flex is working, continue with these extensions:
 - **Voice locking:** explore identity-aware interactions for personalized device experiences.
 - **Voice clone:** coming soon.
 - **Tool actions:** connect MCP tools so the device can retrieve external data or trigger services.
-- **Reache Mini + ReBot ARM:** We will provide the live demo and source code
+- **Reachy Mini + ReBot ARM:** We will provide the live demo and source code
 
 ### Free Weather MCP Sample
 
