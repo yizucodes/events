@@ -252,7 +252,7 @@
       }
 
       .hero-title span {
-        display: block;
+        display: inline;
         white-space: nowrap;
       }
 
@@ -3870,6 +3870,451 @@
       font-size: 0.5rem;
     }
 
+    /* Keep the expanded workshop storyboards compact enough for one-screen slides. */
+    #bot .split {
+      grid-template-columns: minmax(0, 0.82fr) minmax(560px, 1.18fr);
+      gap: clamp(22px, 3vw, 44px);
+    }
+
+    #bot .character-media-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    #bot .character-media-grid .media img {
+      height: clamp(112px, 16svh, 170px);
+      max-height: none;
+      padding: 7px;
+      object-fit: contain;
+    }
+
+    #pair .workflow-media-strip {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    #pair .workflow-media-strip .media img {
+      height: clamp(72px, 10svh, 104px);
+      max-height: none;
+      padding: 6px;
+      object-fit: contain;
+    }
+
+    #pair .workflow-media-strip .caption {
+      gap: 6px;
+      padding: 6px 8px 7px;
+      font-size: 0.58rem;
+    }
+
+    #explore .explore-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(210px, 0.65fr) minmax(0, 1fr);
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    #explore .explore-grid > .explore-card:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    #explore .explore-grid > .explore-card:nth-child(2) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    #explore .explore-grid > .explore-card:nth-child(3) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    #explore .explore-grid > .explore-card:nth-child(4) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    #explore .explore-grid > .explore-card:nth-child(5) {
+      grid-column: 4;
+      grid-row: 1 / span 2;
+    }
+
+    #explore .community-panel {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
+
+    .robot-demo-card {
+      justify-content: flex-end;
+      overflow: hidden;
+      border-color: rgba(255, 98, 104, 0.42);
+      background:
+        linear-gradient(150deg, rgba(255, 213, 95, 0.42), transparent 50%),
+        linear-gradient(330deg, rgba(31, 199, 209, 0.2), transparent 60%),
+        #ffffff;
+      box-shadow: 8px 8px 0 rgba(255, 98, 104, 0.28), 0 18px 48px rgba(42, 117, 125, 0.12);
+    }
+
+    .robot-demo-card::before {
+      content: "LIVE";
+      position: absolute;
+      top: 18px;
+      right: -30px;
+      width: 112px;
+      padding: 5px 0;
+      color: #ffffff;
+      background: var(--ember);
+      font-size: 0.58rem;
+      font-weight: 900;
+      text-align: center;
+      transform: rotate(38deg);
+    }
+
+    .robot-demo-card .icon {
+      color: #ffffff;
+      background: var(--ember);
+    }
+
+    .robot-demo-visual {
+      position: absolute;
+      top: clamp(54px, 10vh, 96px);
+      left: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(-50%);
+    }
+
+    .robot-demo-visual span {
+      width: 15px;
+      height: 21px;
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(31, 199, 209, 0.12);
+    }
+
+    .robot-demo-visual i {
+      width: clamp(74px, 7vw, 106px);
+      height: 4px;
+      background: var(--ink);
+    }
+
+    @media (min-width: 900px) and (max-height: 820px) {
+      #bot .character-media-grid .media img {
+        height: clamp(96px, 14svh, 122px);
+      }
+
+      #pair .workflow-media-strip .media img {
+        height: clamp(58px, 8svh, 72px);
+      }
+
+      #explore .explore-card {
+        min-height: 120px;
+      }
+    }
+
+    html[data-screen="ipad"] #bot .split {
+      grid-template-columns: minmax(0, 0.88fr) minmax(500px, 1.12fr);
+      gap: 16px;
+    }
+
+    html[data-screen="ipad"] #explore .explore-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(168px, 0.68fr) minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    html[data-screen="ipad"] #explore .explore-card {
+      min-height: 116px;
+      padding: 11px;
+    }
+
+    html[data-screen="ipad"] #explore .explore-card p {
+      font-size: 0.7rem;
+    }
+
+    html[data-screen="phone"] #bot .split {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid .media {
+      display: block;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid .media:nth-child(2) {
+      display: block;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid .media img {
+      height: 72px;
+      padding: 4px;
+    }
+
+    html[data-screen="phone"] #pair .workflow-media-strip {
+      display: flex;
+      width: 100%;
+      min-width: 0;
+      max-width: calc(100vw - 24px);
+      gap: 7px;
+      overflow-x: auto;
+      padding: 2px 4px 8px 2px;
+      scroll-snap-type: x proximity;
+      scrollbar-width: thin;
+    }
+
+    html[data-screen="phone"] #pair .workflow-media-strip .media {
+      display: block;
+      flex: 0 0 min(68vw, 250px);
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+
+    html[data-screen="phone"] #pair .workflow-media-strip .media img {
+      height: 46px;
+    }
+
+    html[data-screen="phone"] #explore .explore-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: auto;
+    }
+
+    html[data-screen="phone"] #explore .explore-grid > .explore-card {
+      grid-column: auto;
+      grid-row: auto;
+    }
+
+    html[data-screen="phone"] #explore .explore-grid > .robot-demo-card {
+      grid-column: 1 / -1;
+      min-height: 108px;
+    }
+
+    html[data-screen="phone"] #explore .community-panel {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    html[data-screen="phone"] .robot-demo-card::before {
+      top: 14px;
+    }
+
+    html[data-screen="phone"] .robot-demo-visual {
+      top: 24px;
+      left: auto;
+      right: 34px;
+      transform: scale(0.68);
+      transform-origin: right top;
+    }
+
+    @media (min-width: 641px) {
+      #pair .slide-kicker {
+        margin-left: 0;
+      }
+    }
+
+    .prep-resources {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 12px;
+      margin-top: 13px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(5, 143, 153, 0.2);
+      color: var(--ink-soft);
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .prep-resources > span {
+      color: var(--cyan-deep);
+      text-transform: uppercase;
+    }
+
+    .prep-resources a {
+      color: var(--ink);
+      text-decoration-color: rgba(255, 98, 104, 0.65);
+      transition: color 160ms ease;
+    }
+
+    .prep-resources a:hover,
+    .prep-resources a:focus-visible {
+      color: var(--ember);
+      outline: none;
+    }
+
+    .prep-resources a + a::before {
+      content: "/";
+      margin-right: 12px;
+      color: rgba(5, 143, 153, 0.38);
+    }
+
+    @media (min-width: 1181px) {
+      #preparations .split {
+        grid-template-columns: minmax(0, 1.25fr) minmax(420px, 0.75fr);
+        gap: clamp(28px, 3vw, 46px);
+      }
+
+      #preparations h2 {
+        max-width: none;
+        font-size: clamp(2.65rem, 3.5vw, 3.8rem);
+        white-space: nowrap;
+      }
+    }
+
+    html[data-screen="phone"] .prep-resources {
+      flex-wrap: wrap;
+      gap: 5px 9px;
+      margin-top: 12px;
+      padding-top: 8px;
+      font-size: 0.6rem;
+    }
+
+    html[data-screen="phone"] .prep-resources > span {
+      flex-basis: 100%;
+    }
+
+    html[data-screen="phone"] .prep-resources a + a::before {
+      margin-right: 9px;
+    }
+
+    .debug-tools-item {
+      overflow: hidden;
+      padding: 0 !important;
+    }
+
+    .debug-tools-item::before {
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .debug-tools-button {
+      display: flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 12px 12px 48px;
+      border: 0;
+      color: var(--ink-soft);
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease;
+    }
+
+    .debug-tools-button:hover,
+    .debug-tools-button:focus-visible,
+    .debug-tools-button[aria-expanded="true"] {
+      color: var(--ink);
+      background: rgba(31, 199, 209, 0.1);
+      outline: none;
+    }
+
+    .optional-badge {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #9d3036;
+      background: rgba(255, 98, 104, 0.14);
+      font-size: 0.54rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .debug-tools-panel {
+      width: min(920px, 100%);
+      max-height: calc(100svh - 40px);
+      overflow-y: auto;
+    }
+
+    .debug-platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .debug-platform {
+      min-width: 0;
+      padding: 15px;
+      border: 1px solid rgba(5, 143, 153, 0.2);
+      border-top: 4px solid var(--cyan);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .debug-platform:nth-child(2) {
+      border-top-color: var(--ember);
+    }
+
+    .debug-platform:nth-child(3) {
+      border-top-color: var(--moss);
+    }
+
+    .debug-platform h3 {
+      font-size: 1rem;
+    }
+
+    .debug-platform p {
+      min-height: 38px;
+      margin-top: 5px;
+      color: var(--ink-soft);
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .debug-platform a {
+      color: var(--cyan-deep);
+      font-weight: 900;
+    }
+
+    .debug-platform code {
+      display: block;
+      margin-top: 9px;
+      padding: 8px 9px;
+      overflow-x: auto;
+      color: #d9fbff;
+      background: #173d46;
+      font: 700 0.66rem/1.45 "Courier New", monospace;
+      white-space: pre-wrap;
+    }
+
+    .debug-monitor-note {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-left: 4px solid var(--sun);
+      color: var(--ink-soft);
+      background: rgba(255, 213, 95, 0.16);
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .debug-command-code::after {
+      content: "SERIAL / TIO";
+    }
+
+    @media (max-width: 760px) {
+      .debug-tools-panel {
+        max-height: calc(100svh - 20px);
+      }
+
+      .debug-platform-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .debug-platform p {
+        min-height: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3892,7 +4337,7 @@
       <img class="slide-logo" src="Agora_Logo.png" alt="Agora logo">
       <div class="slide-inner split">
         <div class="fade-up">
-          <h1 class="hero-title"><span>Give the body</span><span>a brain.</span></h1>
+          <h1 class="hero-title"><span>Give the body</span> <span>a brain.</span></h1>
           <p class="lead">Turn ReSpeaker Flex into a Baymax-like AI companion that listens, thinks, speaks, and acts.</p>
           <div class="button-row">
             <a class="button primary" href="https://www.agora.io/en/">Visit Agora</a>
@@ -3930,7 +4375,19 @@
             <li>One ReSpeaker Flex with XIAO ESP32-S3</li>
             <li>USB cable for device flashing</li>
             <li>Access to Bot Station</li>
+            <li class="debug-tools-item">
+              <button class="debug-tools-button" id="debug-tools-button" type="button" aria-haspopup="dialog" aria-controls="debug-tools-dialog" aria-expanded="false">
+                <span>Prepare debugging tools</span>
+                <span class="optional-badge">Optional</span>
+              </button>
+            </li>
           </ul>
+          <nav class="prep-resources" aria-label="Workshop resources">
+            <span>Workshop resources</span>
+            <a href="https://drive.google.com/drive/folders/1t2uWEdmkG84dJgzPTc2KT8XzHd8HxsC5" target="_blank" rel="noreferrer">Video tutorials</a>
+            <a href="./README/">README</a>
+            <a href="./README/?raw">README?raw</a>
+          </nav>
         </div>
         <div class="panel panel-pad fade-up delay-1">
           <p class="lead" style="font-size: 1.05rem; margin-top: 0;">Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act.</p>
@@ -3962,8 +4419,8 @@
           <h2>Meet ReSpeaker Flex.</h2>
           <p class="lead">ReSpeaker Flex gives your AI character a hardware body with far-field voice capture, Wi-Fi, and speaker output.</p>
           <div class="button-map">
-            <div class="button-card"><strong>Reset</strong><span>Restart the ESP32-S3 and launch your bot.</span></div>
-            <div class="button-card"><strong>Boot / Pair</strong><span>Enter flashing or Wi-Fi pairing mode.</span></div>
+            <div class="button-card"><strong>Reset</strong><span>Start or stop the conversation after pairing.</span></div>
+            <div class="button-card"><strong>Boot / Pair</strong><span>Hold to reconfigure Wi-Fi; press after Wi-Fi connects to start pairing.</span></div>
           </div>
           <div class="button-row">
             <a class="button" href="https://wiki.seeedstudio.com/respeaker_flex_xiao_introduction/">ReSpeaker documentation</a>
@@ -3987,7 +4444,7 @@
           </ol>
         </div>
         <div class="fade-up delay-1">
-          <div class="image-stack">
+          <div class="image-stack character-media-grid">
             <article class="media compact">
               <img src="4-botstation-main.png" alt="Bot Station main page">
               <div class="caption"><span>Bot Station</span><span>Login</span></div>
@@ -3995,6 +4452,14 @@
             <article class="media compact">
               <img src="4-botstation-add-new-bot.png" alt="Create a new bot in Bot Station">
               <div class="caption"><span>Create new bot</span><span>CHARACTER SETUP</span></div>
+            </article>
+            <article class="media compact">
+              <img src="4-botstation-add-new-bot-config.png" alt="Configure a character in Bot Station">
+              <div class="caption"><span>Configure character</span><span>Persona + voice</span></div>
+            </article>
+            <article class="media compact">
+              <img src="4-botstation-add-new-bot-try-without-hardware.png" alt="Preview a Bot Station conversation without hardware">
+              <div class="caption"><span>Preview conversation</span><span>Try without hardware</span></div>
             </article>
           </div>
         </div>
@@ -4007,7 +4472,7 @@
         <div class="fade-up">
           <p class="slide-kicker">Section 5</p>
           <h2>Flash, pair, and run.</h2>
-          <p class="lead">Choose a flasher, connect ReSpeaker Flex, pair the device, and activate your bot.</p>
+          <p class="lead">Download the ReSpeaker Flex firmware, choose a flasher, pair the device, and activate your bot.</p>
         </div>
         <div class="flash-options fade-up delay-1" aria-label="ReSpeaker Flex flashing options">
           <article class="flash-option web">
@@ -4036,17 +4501,25 @@
           </article>
         </div>
         <div class="timeline fade-up delay-2">
-          <div class="timeline-step"><strong>1</strong><span>In My Bots, choose Add device.</span></div>
+          <div class="timeline-step"><strong>1</strong><span>In My Bots, choose Add device and download <span class="code-chip">reSpeaker-flex-esp32s3</span>.</span></div>
           <div class="timeline-step"><strong>2</strong><span>Choose ESPConnect or the esptool CLI.</span></div>
           <div class="timeline-step"><strong>3</strong><span>Connect the board, select its port, and flash at <span class="code-chip">460800</span>.</span></div>
-          <div class="timeline-step"><strong>4</strong><span>Hold Boot / Pair, configure Wi-Fi, enter the spoken code, then press Reset.</span></div>
+          <div class="timeline-step"><strong>4</strong><span>Power off and on to configure Wi-Fi. Hold Boot to reconfigure; after Wi-Fi connects, press Boot and enter the spoken code. The first conversation starts automatically after pairing.</span></div>
         </div>
-        <div class="image-stack pairing-images">
+        <div class="image-stack pairing-images workflow-media-strip" aria-label="Firmware flashing and device pairing workflow">
           <article class="media compact fade-up delay-1">
             <img src="5-botstation-add-new-device.png" alt="Bot Station add new device page">
-            <div class="caption"><span>Add device</span><span>Flash</span></div>
+            <div class="caption"><span>Firmware catalog</span><span>Download</span></div>
           </article>
           <article class="media compact fade-up delay-2">
+            <img src="5-flashtool-web-choose-device.png" alt="Choose the ReSpeaker Flex serial device in ESPConnect">
+            <div class="caption"><span>Connect serial device</span><span>USB JTAG</span></div>
+          </article>
+          <article class="media compact fade-up delay-3">
+            <img src="5-flashtool-web-flash.png" alt="Select and flash ReSpeaker Flex firmware in ESPConnect">
+            <div class="caption"><span>Select firmware</span><span>Flash at 0x0</span></div>
+          </article>
+          <article class="media compact fade-up delay-3">
             <img src="5-botstation-add-new-device-pair.png" alt="ReSpeaker Flex local pairing page">
             <div class="caption"><span>Pairing page</span><span>Hotspot</span></div>
           </article>
@@ -4089,6 +4562,12 @@
               <div class="icon">04</div>
               <h3>Tool actions</h3>
               <p>Add MCP tools so your device can trigger external services.</p>
+            </article>
+            <article class="explore-card robot-demo-card">
+              <div class="icon">05</div>
+              <div class="robot-demo-visual" aria-hidden="true"><span></span><i></i><span></span></div>
+              <h3>Reache Mini + ReBot ARM</h3>
+              <p>We will provide the live demo and source code.</p>
             </article>
             <aside class="community-panel fade-up delay-2" aria-label="Join the Agora Discord community">
               <div class="community-copy">
@@ -4184,7 +4663,7 @@
   -p /dev/cu.wchusbserial1320 \
   -b 460800 \
   write_flash --erase-all \
-  0x0 /path/to/respeaker-flex-agora-mybot.bin</code></pre>
+  0x0 /path/to/reSpeaker-flex-esp32s3_sg3.bin</code></pre>
       </div>
       <div class="flash-command-actions">
         <span class="flash-command-hint">Replace example paths before running</span>
@@ -4221,6 +4700,44 @@
       <div class="firmware-dialog-actions">
         <a class="button primary" href="https://github.com/respeaker/reSpeaker_Flex/raw/refs/heads/main/xmos_firmwares/i2s/respeaker_flex_i2s_c16k2ch_v1.0.0.bin" download>Download I2S firmware</a>
         <a class="button" href="https://wiki.seeedstudio.com/respeaker_flex_introduction/#update-firmware" target="_blank" rel="noreferrer">Official DFU guide</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-dialog flash-command-dialog" id="debug-tools-dialog" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="debug-tools-title">
+    <div class="tool-dialog-panel flash-command-panel debug-tools-panel">
+      <button class="tool-dialog-close" id="debug-tools-close" type="button" aria-label="Close debugging tools guide">&times;</button>
+      <span class="flash-command-kicker">Optional serial console</span>
+      <h2 id="debug-tools-title">Monitor device logs.</h2>
+      <p>Use <code>tio</code> on macOS or Linux, or PuTTY on Windows, to watch live logs from ReSpeaker Flex.</p>
+      <div class="debug-platform-grid" aria-label="tio installation commands">
+        <section class="debug-platform">
+          <h3>macOS</h3>
+          <p>Install with Homebrew, then list available serial ports.</p>
+          <code>brew install tio
+ls /dev/cu.*</code>
+        </section>
+        <section class="debug-platform">
+          <h3>Windows</h3>
+          <p><a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank" rel="noreferrer">Install PuTTY</a>, choose Serial, and use the device COM port from Device Manager.</p>
+          <code>winget install PuTTY.PuTTY
+Serial line: COM3
+Speed: 115200</code>
+        </section>
+        <section class="debug-platform">
+          <h3>Linux</h3>
+          <p>Install with APT, then locate an ACM or USB serial port.</p>
+          <code>sudo apt update &amp;&amp; sudo apt install tio
+ls /dev/ttyACM* /dev/ttyUSB*</code>
+        </section>
+      </div>
+      <div class="flash-command-code debug-command-code">
+        <pre><code id="debug-command">tio /dev/cu.usbmodem1101</code></pre>
+      </div>
+      <div class="debug-monitor-note">Replace <code>/dev/cu.usbmodem1101</code> with your device port. Linux commonly uses <code>/dev/ttyACM0</code> or <code>/dev/ttyUSB0</code>. On Windows, replace <code>COM3</code> with the port shown in Device Manager.</div>
+      <div class="flash-command-actions">
+        <span class="flash-command-hint">Update the port before running</span>
+        <button class="flash-copy-button" id="debug-copy-button" type="button">Copy command</button>
       </div>
     </div>
   </div>
@@ -4262,11 +4779,17 @@
     const firmwareButton = document.getElementById('firmware-button');
     const firmwareDialog = document.getElementById('firmware-dialog');
     const firmwareDialogClose = document.getElementById('firmware-dialog-close');
+    const debugToolsButton = document.getElementById('debug-tools-button');
+    const debugToolsDialog = document.getElementById('debug-tools-dialog');
+    const debugToolsDialogClose = document.getElementById('debug-tools-close');
+    const debugCommand = document.getElementById('debug-command');
+    const debugCopyButton = document.getElementById('debug-copy-button');
     let activeIndex = 0;
     let isMoving = false;
     let activeMediaIndex = -1;
     let stageTimer;
     let copyFeedbackTimer;
+    let debugCopyFeedbackTimer;
     let wheelLocked = false;
     let touchStartX = 0;
     let touchStartY = 0;
@@ -4287,8 +4810,12 @@
       return firmwareDialog.classList.contains('is-open');
     }
 
+    function isDebugToolsDialogOpen() {
+      return debugToolsDialog.classList.contains('is-open');
+    }
+
     function isDialogOpen() {
-      return isToolDialogOpen() || isFlashDialogOpen() || isFirmwareDialogOpen();
+      return isToolDialogOpen() || isFlashDialogOpen() || isFirmwareDialogOpen() || isDebugToolsDialogOpen();
     }
 
     function updateDialogBodyLock() {
@@ -4346,7 +4873,26 @@
       if (restoreFocus) firmwareButton.focus({ preventScroll: true });
     }
 
-    function fallbackCopyText(text) {
+    function openDebugToolsDialog() {
+      if (activeMediaIndex >= 0) resetImageStage();
+      debugToolsDialog.classList.add('is-open');
+      debugToolsDialog.setAttribute('aria-hidden', 'false');
+      debugToolsButton.setAttribute('aria-expanded', 'true');
+      updateDialogBodyLock();
+      debugToolsDialogClose.focus({ preventScroll: true });
+    }
+
+    function closeDebugToolsDialog(restoreFocus = true) {
+      debugToolsDialog.classList.remove('is-open');
+      debugToolsDialog.setAttribute('aria-hidden', 'true');
+      debugToolsButton.setAttribute('aria-expanded', 'false');
+      window.clearTimeout(debugCopyFeedbackTimer);
+      debugCopyButton.textContent = 'Copy command';
+      updateDialogBodyLock();
+      if (restoreFocus) debugToolsButton.focus({ preventScroll: true });
+    }
+
+    function fallbackCopyText(text, focusTarget = flashCopyButton) {
       const textarea = document.createElement('textarea');
       textarea.value = text;
       textarea.setAttribute('readonly', '');
@@ -4360,7 +4906,7 @@
         copied = document.execCommand('copy');
       } finally {
         textarea.remove();
-        flashCopyButton.focus({ preventScroll: true });
+        focusTarget.focus({ preventScroll: true });
       }
 
       return copied;
@@ -4385,6 +4931,28 @@
       flashCopyButton.textContent = copied ? 'Copied' : 'Copy failed';
       copyFeedbackTimer = window.setTimeout(() => {
         flashCopyButton.textContent = 'Copy command';
+      }, 1800);
+    }
+
+    async function copyDebugCommand() {
+      const text = debugCommand.textContent.trim();
+      let copied = false;
+
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch {
+          copied = fallbackCopyText(text, debugCopyButton);
+        }
+      } else {
+        copied = fallbackCopyText(text, debugCopyButton);
+      }
+
+      window.clearTimeout(debugCopyFeedbackTimer);
+      debugCopyButton.textContent = copied ? 'Copied' : 'Copy failed';
+      debugCopyFeedbackTimer = window.setTimeout(() => {
+        debugCopyButton.textContent = 'Copy command';
       }, 1800);
     }
 
@@ -4469,6 +5037,7 @@
       if (isToolDialogOpen()) closeToolDialog(false);
       if (isFlashDialogOpen()) closeFlashDialog(false);
       if (isFirmwareDialogOpen()) closeFirmwareDialog(false);
+      if (isDebugToolsDialogOpen()) closeDebugToolsDialog(false);
       if (activeMediaIndex >= 0) resetImageStage();
       const nextIndex = Math.max(0, Math.min(index, slides.length - 1));
       if (nextIndex === activeIndex && isMoving) return;
@@ -4548,6 +5117,16 @@
           event.preventDefault();
           closeFirmwareDialog();
         } else if (event.target.tagName !== 'BUTTON' && event.target.tagName !== 'A' && (key === ' ' || nextKeys.includes(key) || previousKeys.includes(key) || (key >= '1' && key <= String(slides.length)))) {
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (isDebugToolsDialogOpen()) {
+        if (key === 'escape') {
+          event.preventDefault();
+          closeDebugToolsDialog();
+        } else if (event.target.tagName !== 'BUTTON' && (key === ' ' || nextKeys.includes(key) || previousKeys.includes(key) || (key >= '1' && key <= String(slides.length)))) {
           event.preventDefault();
         }
         return;
@@ -4641,6 +5220,20 @@
     firmwareDialogClose.addEventListener('click', () => closeFirmwareDialog());
     firmwareDialog.addEventListener('click', (event) => {
       if (event.target === firmwareDialog) closeFirmwareDialog();
+    });
+
+    debugToolsButton.addEventListener('click', openDebugToolsDialog);
+    debugToolsButton.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        openDebugToolsDialog();
+      }
+    });
+    debugToolsDialogClose.addEventListener('click', () => closeDebugToolsDialog());
+    debugCopyButton.addEventListener('click', copyDebugCommand);
+    debugToolsDialog.addEventListener('click', (event) => {
+      if (event.target === debugToolsDialog) closeDebugToolsDialog();
     });
 
     document.addEventListener('wheel', (event) => {

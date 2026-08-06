@@ -2,17 +2,13 @@
 
 **Turn ReSpeaker Flex into a Baymax-like AI companion that listens, thinks, speaks, and acts.**
 
-In this second Robotics Fair 2026 workshop, you will connect a physical voice device to conversational intelligence. By the end, your ReSpeaker Flex will be paired with an AI character in Bot Station and ready to listen, think, speak, and act through tool integrations.
+In this Robotics Fair 2026 workshop with Seeed Studio, you will connect a physical voice device to conversational intelligence. By the end, your ReSpeaker Flex will be paired with an AI character in Bot Station and ready to listen, think, speak, and act through tool integrations.
 
 The experience comes together in three layers:
 
 1. **Persona:** define your AI character.
 2. **Voice:** give the character the ability to listen and speak.
 3. **Body:** run the experience on real ReSpeaker hardware.
-
-## Workshop Deck
-
-Open [index.html](index.html) to use the six-section presentation deck. Move forward or backward with the arrow keys, WASD, the mouse wheel, or a touch swipe. When advancing, workshop screenshots open as full-screen image slides.
 
 ## Workshop Flow
 
@@ -27,9 +23,7 @@ Open [index.html](index.html) to use the six-section presentation deck. Move for
 
 ## 1. Give the Body a Brain
 
-You are building a Baymax-like physical AI companion with a custom persona, conversational voice, and ReSpeaker hardware body.
-
-Workshop links:
+Links:
 
 - [Agora](https://www.agora.io/en/)
 - [Seeed Studio](https://www.seeedstudio.com/)
@@ -40,18 +34,47 @@ Workshop links:
 Make sure the account, ReSpeaker Flex, and cable are ready before the live setup begins.
 
 - Computer with internet access
-- [Agora account](https://console.agora.io/) for Console login
-- One ReSpeaker Flex with XIAO ESP32-S3
+- One ReSpeaker Flex with XIAO ESP32-S3, confirm speaker and 4-mic array are connected
 - USB cable for device flashing
+- [Agora account](https://console.agora.io/), [Sign Up](https://sso2.agora.io/en/signup) if you don't have it
+- Create a project and make sure "Conversational AI Engine" is enabled(enabled by default)
 - Access to [Bot Station](https://botstation.sg3.agoralab.co/)
 
+### Optional: Prepare Debugging Tools
+
+Use [`tio`](https://github.com/tio/tio) on macOS or Linux, or PuTTY on Windows, to monitor live serial logs from ReSpeaker Flex.
+
+**macOS:**
+
+```bash
+brew install tio
+ls /dev/cu.*
+```
+
+**Windows:** install [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html):
+
+```powershell
+winget install PuTTY.PuTTY
+```
+
+Open PuTTY, select **Serial**, choose the device's `COM` port from Device Manager, set **Speed** to `115200`, and select **Open**.
+
+**Linux:**
+
+```bash
+sudo apt update && sudo apt install tio
+ls /dev/ttyACM* /dev/ttyUSB*
+```
+
+On macOS or Linux, connect to the serial port and monitor logs:
+
+```bash
+tio /dev/cu.usbmodem1101
+```
+
+Replace `/dev/cu.usbmodem1101` with your device port. Linux commonly uses `/dev/ttyACM0` or `/dev/ttyUSB0`. On Windows, replace `COM3` with the port shown in Device Manager.
+
 Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act. Seeed Studio brings ReSpeaker Flex, XIAO ESP32-S3, and the XVF3800 circular four-microphone array together for robotics and embodied AI.
-
-Open these services before setup:
-
-1. [Agora Console](https://console.agora.io/)
-2. [Seeed Studio](https://www.seeedstudio.com/)
-3. [Bot Station](https://botstation.sg3.agoralab.co/)
 
 ## 3. Meet ReSpeaker Flex
 
@@ -64,9 +87,8 @@ ReSpeaker Flex is the physical interface for your AI character. It provides Wi-F
 
 ### Main Controls
 
-- **Reset:** restart the board.
-- **Activate:** launch the paired bot session.
-- **Pair:** start the local hotspot used during setup.
+- **Activate[RESET]:** start or stop the conversation after pairing.
+- **Pair[BOOT]:** hold to reconfigure Wi-Fi; press after Wi-Fi connects to start pairing.
 
 ![ReSpeaker Flex with four-microphone array](3-respeaker-flex-xvf3800-circular-4_1_.jpg)
 
@@ -78,8 +100,6 @@ Use Bot Station to define how your physical AI behaves, speaks, and greets users
 ### Open Bot Station
 
 1. Visit [Bot Station](https://botstation.sg3.agoralab.co/).
-2. Sign in with your Agora account.
-3. Confirm that the Bot Station home page opens.
 
 ![Bot Station main page](4-botstation-main.png)
 
@@ -99,14 +119,16 @@ Use Bot Station to define how your physical AI behaves, speaks, and greets users
 - **Voice:** select an available text-to-speech voice.
 - **System prompt:** define behavior, boundaries, and knowledge scope.
 - **Welcome message:** write the first message spoken after activation.
-- **Filler words:** add short phrases for moments when a response is still being generated.
-- **MCP server:** optionally connect tools that can retrieve data or perform actions.
+- **Filler words(Optional):** add short phrases for moments when a response is still being generated.
+- **MCP server(Optional):** optionally connect tools that can retrieve data or perform actions.
 
 Example system prompt:
 
 ```text
 You are a friendly workshop assistant running on a small voice device. Keep answers short, practical, and easy to understand. Explain the next workshop step clearly when asked.
 ```
+
+![Config the created bot](4-botstation-add-new-bot-config.png)
 
 ### Save and Preview
 
@@ -123,13 +145,19 @@ What can you help me with?
 Explain this workshop in one sentence.
 ```
 
+![Try it](4-botstation-add-new-bot-try-without-hardware.png)
+
 ## 5. Flash, Pair, and Run
 
-Open your bot in **My Bots**, choose **Add device**, then select one of the two flashing workflows.
+Open your bot in **My Bots**, choose **Add device**, pick and download the firmware for reSpeaker(reSpeaker-flex-esp32s3), then select one of the two flashing workflows.
 
 ### Option A: Web Flasher
 
 The [web flash tool](https://thelastoutpostworkshop.github.io/ESPConnect/) runs in your browser. It does not require an app download or installation.
+
+![Connect device to flashtool](5-flashtool-web-choose-device.png)
+
+![Flash with web tool](5-flashtool-web-flash.png)
 
 ### Option B: esptool
 
@@ -138,10 +166,8 @@ Install Espressif [esptool](https://docs.espressif.com/projects/esptool/en/lates
 Update the serial port and firmware image path, then run:
 
 ```bash
-esptool -p /dev/cu.wchusbserial1320 -b 460800 write_flash --erase-all 0x0 /path/to/respeaker-flex-agora-mybot.bin
+esptool -p /dev/cu.wchusbserial1320 -b 460800 write_flash --erase-all 0x0 /path/to/reSpeaker-flex-esp32s3_sg3.bin
 ```
-
-The deck also provides this command from the small **AI** button beside **Download required**, with a button for copying it.
 
 ### Flash the Firmware
 
@@ -151,7 +177,7 @@ The deck also provides this command from the small **AI** button beside **Downlo
 4. Select the ReSpeaker firmware image and start flashing.
 5. Wait for the flashing process to finish successfully.
 
-### Optional: XVF3800 I2S Firmware
+### Optional, IGNORE THIS IF YOU DON'T KNOW WHAT IT IS: Flash XVF3800 I2S Firmware
 
 The XIAO ESP32-S3 communicates with the XVF3800 microphone array over I2S. Flash the separate I2S firmware if the device still uses its factory USB firmware or produces loud static or noise instead of clear microphone audio. Skip this update when I2S audio is already clean.
 
@@ -171,13 +197,14 @@ See the [official ReSpeaker Flex firmware guide](https://wiki.seeedstudio.com/re
 
 ### Pair and Activate
 
-1. Press and hold Boot / Pair on ReSpeaker Flex.
-2. Connect your computer to the Wi-Fi hotspot created by ReSpeaker Flex.
+1. Power off and on ReSpeaker Flex to start Wi-Fi configuration.
+2. Connect your computer to the Wi-Fi hotspot(Name starts with Agora-Convo) created by ReSpeaker Flex.
 3. Open `http://192.168.4.1/` if the configuration page does not open automatically.
-4. Wait for ReSpeaker Flex to connect to Wi-Fi and speak its pairing code.
-5. Return to Bot Station and enter the spoken pairing code.
-6. Submit the form and wait for pairing to complete.
-7. Press Reset to activate the bot and begin a voice conversation.
+4. Wait for ReSpeaker Flex to connect to Wi-Fi.
+5. After Wi-Fi connects, press Boot / Pair to start pairing and listen for the spoken pairing code.
+6. Return to Bot Station and enter the spoken pairing code.
+7. Submit the form and wait for pairing to complete. The first conversation starts automatically after pairing.
+8. Press Reset to stop or start the conversation again.
 
 ![Device pairing page](5-botstation-add-new-device-pair.png)
 
@@ -199,6 +226,7 @@ Once ReSpeaker Flex is working, continue with these extensions:
 - **Voice locking:** explore identity-aware interactions for personalized device experiences.
 - **Voice clone:** coming soon.
 - **Tool actions:** connect MCP tools so the device can retrieve external data or trigger services.
+- **Reache Mini + ReBot ARM:** We will provide the live demo and source code
 
 ### Free Weather MCP Sample
 
@@ -229,15 +257,17 @@ Join other voice AI builders in the Agora Discord community:
 
 ![QR code to join the Agora Discord community](join-discord-agora-qr.jpg)
 
+[Checkout full step-by-step tutorial videos](https://drive.google.com/drive/folders/1t2uWEdmkG84dJgzPTc2KT8XzHd8HxsC5)
+
 ## Troubleshooting
 
 | Problem | What to Check |
 | --- | --- |
 | Computer cannot find ReSpeaker Flex | Reconnect the USB cable, try another USB port, or confirm the serial driver is installed. |
 | Flashing does not start | Confirm the serial port and `460800` baud rate, then retry the flash command. |
-| Pairing page does not open | Connect to the ReSpeaker hotspot and manually open `http://192.168.4.1/`. |
-| Pairing code fails | Copy a new code from Bot Station and make sure there are no extra spaces. |
-| Bot does not respond | Confirm Wi-Fi is configured, the bot is saved, and ReSpeaker Flex is activated. |
+| Pairing page does not open | Connect to the ReSpeaker hotspot(Name starts with Agora-Convo) and manually open `http://192.168.4.1/`. |
+| Pairing code fails | Get the spoken code and put into Bot Station again. |
+| Bot does not respond | Confirm Wi-Fi is configured, the bot is saved, ReSpeaker Flex is activated and wait for longer time. |
 | Voice sounds wrong | Recheck the selected text-to-speech voice in Bot Station. |
 
 ## Completion Checklist

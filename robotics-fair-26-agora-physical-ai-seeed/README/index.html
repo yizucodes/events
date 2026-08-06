@@ -429,6 +429,28 @@
         overflow-wrap: anywhere;
       }
     }
+
+    html[data-raw-mode="true"] .reader-header,
+    html[data-raw-mode="true"] .toc {
+      display: none;
+    }
+
+    html[data-raw-mode="true"] .reader-shell {
+      display: block;
+      width: min(100%, 1040px);
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    html[data-raw-mode="true"] .markdown-body {
+      min-height: 100vh;
+      max-width: none;
+      padding: clamp(24px, 5vw, 72px) clamp(16px, 4vw, 48px);
+      border-inline: 1px solid rgba(5, 143, 153, 0.16);
+      font: 500 14px/1.65 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
   </style>
 </head>
 <body>
@@ -463,13 +485,24 @@
     (async function () {
       const article = document.getElementById("markdown-body");
       const toc = document.getElementById("toc-links");
+      const rawMode = new URLSearchParams(window.location.search).has("raw");
+
+      if (rawMode) document.documentElement.dataset.rawMode = "true";
 
       try {
         const response = await fetch("../README.md", { cache: "no-cache" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        if (!window.marked) throw new Error("Markdown renderer unavailable");
 
         const markdown = await response.text();
+
+        if (rawMode) {
+          article.textContent = markdown;
+          article.setAttribute("aria-label", "Raw workshop Markdown");
+          document.title = "README.md | Give the Body a Brain";
+          return;
+        }
+
+        if (!window.marked) throw new Error("Markdown renderer unavailable");
         article.innerHTML = window.marked.parse(markdown, { gfm: true });
 
         const slugCounts = new Map();
