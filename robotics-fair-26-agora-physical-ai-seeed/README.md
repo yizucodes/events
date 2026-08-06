@@ -266,6 +266,7 @@ Join other voice AI builders in the Agora Discord community:
 | Computer cannot find ReSpeaker Flex | Reconnect the USB cable, try another USB port, or confirm the serial driver is installed. |
 | Flashing does not start | Confirm the serial port and `460800` baud rate, then retry the flash command. |
 | Pairing page does not open | Connect to the ReSpeaker hotspot(Name starts with Agora-Convo) and manually open `http://192.168.4.1/`. |
+| Cannot connect to Wi-Fi | Confirm the access point supports 2.4 GHz Wi-Fi, the antenna is connected securely, and the password is correct. |
 | Pairing code fails | Get the spoken code and put into Bot Station again. |
 | Bot does not respond | Confirm Wi-Fi is configured, the bot is saved, ReSpeaker Flex is activated and wait for longer time. |
 | Voice sounds wrong | Recheck the selected text-to-speech voice in Bot Station. |
