@@ -37,7 +37,7 @@ Make sure the account, ReSpeaker Flex, and cable are ready before the live setup
 - One ReSpeaker Flex with XIAO ESP32-S3, confirm speaker and 4-mic array are connected
 - USB cable for device flashing
 - [Agora account](https://console.agora.io/), [Sign Up](https://sso2.agora.io/en/signup) if you don't have it
-- Create a project and make sure "Conversational AI Engine" is enabled(enabled by default)
+- Create a project and make sure "Conversational AI Engine" is enabled(enabled by default if new created project)
 - Access to [Bot Station](https://botstation.sg3.agoralab.co/)
 
 ### Optional: Prepare Debugging Tools
@@ -150,6 +150,13 @@ Explain this workshop in one sentence.
 ## 5. Flash, Pair, and Run
 
 Open your bot in **My Bots**, choose **Add device**, pick and download the firmware for reSpeaker(reSpeaker-flex-esp32s3), then select one of the two flashing workflows.
+
+### Tooling Guidance
+
+- **Claude Code or Codex CLI:** prefer `esptool` for flashing and a terminal-based serial monitor such as `tio` for logs. CLI output lets the agent verify the port, detect failures, and repeat the exact command during troubleshooting.
+- **Human-led setup:** prefer the web flasher for a guided workflow that requires no installation. Use a local GUI when a visual tool is more convenient.
+- **Serial port access:** close the serial monitor before flashing, then reopen it after flashing completes. The flasher and monitor cannot use the same port at the same time.
+- **Before running a command:** verify the serial port and firmware path instead of copying the examples unchanged.
 
 ### Option A: Web Flasher
 

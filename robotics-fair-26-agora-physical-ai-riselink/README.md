@@ -10,10 +10,6 @@ The experience comes together in three layers:
 2. **Voice:** give the character the ability to listen and speak.
 3. **Body:** run the experience on real R1 hardware.
 
-## Workshop Deck
-
-Open [index.html](index.html) to use the six-section presentation deck. Move forward or backward with the arrow keys, WASD, the mouse wheel, or a touch swipe. When advancing, workshop screenshots open as full-screen image slides.
-
 ## Workshop Flow
 
 | Section | Focus | Outcome |
@@ -29,7 +25,7 @@ Open [index.html](index.html) to use the six-section presentation deck. Move for
 
 You are building a Jarvis-like physical AI companion with a custom persona, a conversational voice, and an R1 hardware body.
 
-Workshop links:
+Links:
 
 - [Visit Agora](https://www.agora.io/en/)
 - [Visit RiseLink](https://www.riselink.ai/)
@@ -43,6 +39,8 @@ Make sure the account, R1, and cable are ready before the live setup begins.
 - [Agora account](https://console.agora.io/) for Console login
 - One R1 (BK7258) development kit
 - USB cable for device flashing
+- [Agora account](https://console.agora.io/), [Sign Up](https://sso2.agora.io/en/signup) if you don't have it
+- Create a project and make sure "Conversational AI Engine" is enabled(enabled by default if new created project)
 - Access to [Bot Station](https://botstation.sg3.agoralab.co/)
 
 Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act. RiseLink supports the workshop with connectivity expertise across Wi-Fi 6, Bluetooth, Thread, and AI-integrated chips.
@@ -110,6 +108,8 @@ Example system prompt:
 You are a friendly workshop assistant running on a small voice device. Keep answers short, practical, and easy to understand. Explain the next workshop step clearly when asked.
 ```
 
+![Config the created bot](4-botstation-add-new-bot-config.png)
+
 ### Save and Preview
 
 1. Save the bot.
@@ -125,9 +125,18 @@ What can you help me with?
 Explain this workshop in one sentence.
 ```
 
+![Try it](4-botstation-add-new-bot-try-without-hardware.png)
+
 ## 5. Flash, Pair, and Run
 
 Open your bot in **My Bots**, choose **Add device**, then select one of the two flashing workflows.
+
+### Tooling Guidance
+
+- **Claude Code or Codex CLI:** prefer `bk_loader` for flashing and a terminal-based serial monitor such as `tio` for logs. CLI output lets the agent verify the port, detect failures, and repeat the exact command during troubleshooting.
+- **Human-led setup:** prefer the web flasher for a guided workflow that requires no installation. Use the desktop GUI when a local visual tool is more convenient.
+- **Serial port access:** close the serial monitor before flashing, then reopen it after flashing completes. The flasher and monitor cannot use the same port at the same time.
+- **Before running a command:** verify the serial port and firmware path instead of copying the examples unchanged.
 
 ### Option A: Web Flasher
 
@@ -236,7 +245,8 @@ Join other voice AI builders in the Agora Discord community:
 | Computer cannot find the R1 | Reconnect the USB cable, try another USB port, or confirm the serial driver is installed. |
 | Flashing does not start | Confirm the port and `115200` baud rate, then press Reset when prompted. |
 | Pairing page does not open | Connect to the R1 hotspot and manually open `http://192.168.4.1/`. |
-| Pairing code fails | Copy a new code from Bot Station and make sure there are no extra spaces. |
+| Cannot connect to Wi-Fi | Confirm the access point supports 2.4 GHz Wi-Fi, the antenna is connected securely, and the password is correct. |
+| Pairing code fails | Get the code on screen or from configuration page and put into Bot Station again. |
 | Bot does not respond | Confirm Wi-Fi is configured, the bot is saved, and the R1 is activated. |
 | Voice sounds wrong | Recheck the selected text-to-speech voice in Bot Station. |
 

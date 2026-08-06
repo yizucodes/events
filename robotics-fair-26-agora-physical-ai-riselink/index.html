@@ -7,6 +7,49 @@
   <meta name="description" content="A six-slide workshop deck for building a voice-based device AI companion with Agora Bot Station and the R1 development kit.">
   <script>
     (function () {
+      const rawMode = new URLSearchParams(window.location.search).has("raw");
+
+      if (rawMode) {
+        document.documentElement.dataset.rawMode = "true";
+        const rawStyle = document.createElement("style");
+        rawStyle.textContent = `
+          html[data-raw-mode="true"] { color-scheme: light; background: #f4fbfb; }
+          html[data-raw-mode="true"] body { visibility: hidden; margin: 0; background: #f4fbfb; }
+          html[data-raw-mode="true"][data-raw-ready="true"] body { visibility: visible; }
+          html[data-raw-mode="true"] .raw-markdown {
+            width: min(100%, 1040px);
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: clamp(24px, 5vw, 72px) clamp(16px, 4vw, 48px);
+            color: #17353c;
+            background: #ffffff;
+            border-inline: 1px solid rgba(5, 143, 153, 0.16);
+            font: 500 14px/1.65 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+          }
+        `;
+        document.head.appendChild(rawStyle);
+
+        window.addEventListener("DOMContentLoaded", async () => {
+          const source = document.createElement("pre");
+          source.className = "raw-markdown";
+          source.setAttribute("aria-label", "Raw workshop Markdown");
+
+          try {
+            const response = await fetch("README.md", { cache: "no-cache" });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            source.textContent = await response.text();
+            document.title = "README.md | Voice-Based Physical AI Companion";
+          } catch (error) {
+            source.textContent = `Unable to load README.md (${error.message}).\n\nOpen README.md directly from this workshop directory.`;
+          }
+
+          document.body.replaceChildren(source);
+          document.documentElement.dataset.rawReady = "true";
+        }, { once: true });
+      }
+
       function detectWorkshopScreen() {
         const width = window.innerWidth;
         const height = window.innerHeight;
