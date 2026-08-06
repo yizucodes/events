@@ -188,6 +188,8 @@ esptool -p /dev/cu.wchusbserial1320 -b 460800 write_flash --erase-all 0x0 /path/
 
 The XIAO ESP32-S3 communicates with the XVF3800 microphone array over I2S. Flash the separate I2S firmware if the device still uses its factory USB firmware or produces loud static or noise instead of clear microphone audio. Skip this update when I2S audio is already clean.
 
+> **Note:** If your ReSpeaker Flex uses the linear microphone array instead of the circular microphone array, use `respeaker_flex_i2s_l16k2ch_v1.0.0.bin`.
+
 1. Connect your computer to the XMOS USB-C port near the RST button, not the XIAO USB-C port.
 2. Install [`dfu-util`](http://dfu-util.sourceforge.net/): on Windows, download version 0.11, extract the `win64` directory, and add it to the system `Path`; use `brew install dfu-util` on macOS or `sudo apt install dfu-util` on Linux.
 3. Run `dfu-util -l` to confirm that the XVF3800 is detected.

@@ -3240,6 +3240,207 @@
       grid-column: 1 / -1;
     }
 
+    .workshop-flow {
+      display: grid;
+      grid-column: 1 / -1;
+      align-items: center;
+      margin-top: 4px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(0, 217, 255, 0.28);
+    }
+
+    .workshop-flow ol {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .workshop-flow li {
+      position: relative;
+      min-width: 0;
+      min-height: 54px;
+      padding: 9px 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 217, 255, 0.24);
+      border-top: 3px solid var(--cyan);
+      border-radius: 3px;
+      background:
+        linear-gradient(135deg, rgba(0, 217, 255, 0.08), transparent 58%),
+        rgba(4, 19, 26, 0.9);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.015);
+    }
+
+    .workshop-flow li:nth-child(2),
+    .workshop-flow li:nth-child(5) {
+      border-top-color: var(--hud-red);
+    }
+
+    .workshop-flow li:nth-child(3),
+    .workshop-flow li:nth-child(6) {
+      border-top-color: var(--moss);
+    }
+
+    .workshop-flow strong,
+    .workshop-flow span {
+      display: block;
+    }
+
+    .workshop-flow strong {
+      color: var(--cyan);
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+    }
+
+    .workshop-flow span {
+      margin-top: 3px;
+      overflow-wrap: anywhere;
+      color: var(--ink);
+      font-size: 0.68rem;
+      font-weight: 900;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .prep-resources {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 12px;
+      margin-top: 13px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(0, 217, 255, 0.24);
+      color: var(--ink-soft);
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .prep-resources > span {
+      color: var(--cyan);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .prep-resources a {
+      color: var(--ink);
+      text-decoration-color: rgba(255, 75, 43, 0.8);
+      transition: color 160ms ease, text-shadow 160ms ease;
+    }
+
+    .prep-resources a:hover,
+    .prep-resources a:focus-visible {
+      color: var(--cyan);
+      outline: none;
+      text-shadow: 0 0 12px rgba(0, 217, 255, 0.5);
+    }
+
+    .prep-resources a + a::before {
+      content: "/";
+      margin-right: 12px;
+      color: rgba(0, 217, 255, 0.38);
+    }
+
+    html[data-screen="short-wide"] .workshop-flow {
+      padding-top: 10px;
+    }
+
+    html[data-screen="short-wide"] .workshop-flow li {
+      min-height: 46px;
+      padding: 7px 9px;
+    }
+
+    html[data-screen="phone"] .workshop-flow {
+      gap: 7px;
+      margin-top: 9px;
+      padding-top: 9px;
+    }
+
+    html[data-screen="phone"] .workshop-flow ol {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    html[data-screen="phone"] .workshop-flow li {
+      min-height: 43px;
+      padding: 5px 6px;
+    }
+
+    html[data-screen="phone"] .workshop-flow strong {
+      font-size: 0.48rem;
+    }
+
+    html[data-screen="phone"] .workshop-flow span {
+      margin-top: 2px;
+      font-size: 0.54rem;
+    }
+
+    html[data-screen="phone"] .prep-resources {
+      flex-wrap: wrap;
+      gap: 5px 9px;
+      margin-top: 12px;
+      padding-top: 8px;
+      font-size: 0.6rem;
+    }
+
+    html[data-screen="phone"] .prep-resources > span {
+      flex-basis: 100%;
+    }
+
+    html[data-screen="phone"] .prep-resources a + a::before {
+      margin-right: 9px;
+    }
+
+    #bot .split {
+      grid-template-columns: minmax(0, 0.82fr) minmax(560px, 1.18fr);
+      gap: clamp(22px, 3vw, 44px);
+    }
+
+    #bot .character-media-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    #bot .character-media-grid .media img {
+      height: clamp(112px, 16svh, 170px);
+      max-height: none;
+      padding: 7px;
+      object-fit: contain;
+    }
+
+    @media (min-width: 900px) and (max-height: 820px) {
+      #bot .character-media-grid .media img {
+        height: clamp(96px, 14svh, 122px);
+      }
+    }
+
+    html[data-screen="ipad"] #bot .split {
+      grid-template-columns: minmax(0, 0.88fr) minmax(500px, 1.12fr);
+      gap: 16px;
+    }
+
+    html[data-screen="phone"] #bot .split {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid .media,
+    html[data-screen="phone"] #bot .character-media-grid .media:nth-child(2) {
+      display: block;
+    }
+
+    html[data-screen="phone"] #bot .character-media-grid .media img {
+      height: 72px;
+      padding: 4px;
+    }
+
   </style>
 </head>
 <body>
@@ -3287,6 +3488,16 @@
             </div>
           </div>
         </figure>
+        <section class="workshop-flow fade-up delay-2" aria-label="Workshop flow">
+          <ol>
+            <li><strong>01</strong><span>Introduction</span></li>
+            <li><strong>02</strong><span>Prepare</span></li>
+            <li><strong>03</strong><span>Meet R1</span></li>
+            <li><strong>04</strong><span>Create character</span></li>
+            <li><strong>05</strong><span>Flash + pair + run</span></li>
+            <li><strong>06</strong><span>Explore more</span></li>
+          </ol>
+        </section>
       </div>
     </section>
 
@@ -3304,6 +3515,12 @@
             <li>USB cable for device flashing</li>
             <li>Access to Bot Station</li>
           </ul>
+          <nav class="prep-resources" aria-label="Workshop resources">
+            <span>Workshop resources</span>
+            <a href="https://drive.google.com/drive/folders/1ESp5DGPA2IkNg3tnwbUrnorxWYW_WpjK" target="_blank" rel="noreferrer">Video tutorials</a>
+            <a href="./README/">README</a>
+            <a href="./README.md">README.md</a>
+          </nav>
         </div>
         <div class="panel panel-pad fade-up delay-1">
           <p class="lead" style="font-size: 1.05rem; margin-top: 0;">Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act.</p>
@@ -3357,7 +3574,7 @@
           </ol>
         </div>
         <div class="fade-up delay-1">
-          <div class="image-stack">
+          <div class="image-stack character-media-grid">
             <article class="media compact">
               <img src="4-botstation-main.png" alt="Bot Station main page">
               <div class="caption"><span>Bot Station</span><span>Login</span></div>
@@ -3365,6 +3582,14 @@
             <article class="media compact">
               <img src="4-botstation-add-new-bot.png" alt="Create a new bot in Bot Station">
               <div class="caption"><span>Create new bot</span><span>CHARACTER SETUP</span></div>
+            </article>
+            <article class="media compact">
+              <img src="4-botstation-add-new-bot-config.png" alt="Configure a character in Bot Station">
+              <div class="caption"><span>Configure character</span><span>Persona + voice</span></div>
+            </article>
+            <article class="media compact">
+              <img src="4-botstation-add-new-bot-try-without-hardware.png" alt="Preview a Bot Station conversation without hardware">
+              <div class="caption"><span>Preview conversation</span><span>Try without hardware</span></div>
             </article>
           </div>
         </div>
