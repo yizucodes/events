@@ -151,6 +151,8 @@ Explain this workshop in one sentence.
 
 Open your bot in **My Bots**, choose **Add device**, pick and download the firmware for reSpeaker(reSpeaker-flex-esp32s3), then select one of the two flashing workflows.
 
+![Add a new device](5-botstation-add-new-device.png)
+
 ### Tooling Guidance
 
 - **Claude Code or Codex CLI:** prefer `esptool` for flashing and a terminal-based serial monitor such as `tio` for logs. CLI output lets the agent verify the port, detect failures, and repeat the exact command during troubleshooting.
@@ -202,8 +204,6 @@ dfu-util -R -e -a 1 -D /path/to/respeaker_flex_i2s_c16k2ch_v1.0.0.bin
 
 See the [official ReSpeaker Flex firmware guide](https://wiki.seeedstudio.com/respeaker_flex_introduction/#update-firmware) for Windows setup and recovery details.
 
-![Add a new device](5-botstation-add-new-device.png)
-
 ### Pair and Activate
 
 1. Power off and on ReSpeaker Flex to start Wi-Fi configuration.
@@ -235,7 +235,7 @@ Once ReSpeaker Flex is working, continue with these extensions:
 - **Voice locking:** explore identity-aware interactions for personalized device experiences.
 - **Voice clone:** coming soon.
 - **Tool actions:** connect MCP tools so the device can retrieve external data or trigger services.
-- **Reache Mini + ReBot ARM:** We will provide the live demo and source code
+- **Reachy Mini + ReBot ARM:** We will provide the live demo and source code
 
 ### Free Weather MCP Sample
 

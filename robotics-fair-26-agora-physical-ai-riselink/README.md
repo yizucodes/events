@@ -135,7 +135,9 @@ Explain this workshop in one sentence.
 
 ## 5. Flash, Pair, and Run
 
-Open your bot in **My Bots**, choose **Add device**, then select one of the two flashing workflows.
+Open your bot in **My Bots**, choose **Add device**, pick and download the firmware for R1, then select one of the two flashing workflows.
+
+![Add a new device](5-botstation-add-new-device.png)
 
 ### Tooling Guidance
 
@@ -148,12 +150,9 @@ Open your bot in **My Bots**, choose **Add device**, then select one of the two 
 
 The [web flash tool](https://connect.aclsemi.com/download) runs in your browser. It does not require an app download or installation.
 
-1. Go to [home dashboard](https://botstation.sg3.agoralab.co/agents])
-2. **Devices** --> **Pair a new device** --> **Select R1** --> **Download**
+![Connect device to flashtool](5-flashtool-web-choose-device.png)
 
-![Add a new device](5-botstation-add-new-device.png)
-
-3. You should see the `beken_r1_all-app_sg3.bin` R1 firmware image that will be used to flash the device.
+![Flash with web tool](5-flashtool-web-flash.png)
 
 ### Option B: Desktop Flasher
 
@@ -190,6 +189,12 @@ bk_loader download \
 The deck also provides this command from the small **AI** button beside **Download required**, with a button for copying it.
 
 
+1. Connect the R1 to your computer with the USB cable.
+2. Select the correct COM or serial port.
+3. Set the baud rate to `115200`.
+4. Select the R1 firmware image and start flashing.
+5. Press Reset when instructed.
+6. Wait for the flashing process to finish successfully.
 
 ### Pair and Activate
 
