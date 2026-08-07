@@ -4474,6 +4474,61 @@
       font-size: 0.56rem;
     }
 
+    .prep-info-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 124px;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .prep-info-copy {
+      min-width: 0;
+    }
+
+    .prep-discord-qr {
+      margin: 0;
+      padding: 8px;
+      border: 1px solid rgba(5, 143, 153, 0.24);
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: 6px 6px 0 rgba(255, 98, 104, 0.15);
+    }
+
+    .prep-discord-qr img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: contain;
+    }
+
+    .prep-discord-qr figcaption {
+      margin-top: 6px;
+      color: var(--cyan-deep);
+      font-size: 0.56rem;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    html[data-screen="short-wide"] .prep-info-panel {
+      grid-template-columns: minmax(0, 1fr) 108px;
+      gap: 14px;
+    }
+
+    html[data-screen="phone"] .prep-info-panel {
+      grid-template-columns: minmax(0, 1fr) 82px;
+      gap: 10px;
+    }
+
+    html[data-screen="phone"] .prep-discord-qr {
+      padding: 5px;
+      box-shadow: 4px 4px 0 rgba(255, 98, 104, 0.13);
+    }
+
+    html[data-screen="phone"] .prep-discord-qr figcaption {
+      margin-top: 4px;
+      font-size: 0.45rem;
+    }
+
   </style>
 </head>
 <body>
@@ -4559,14 +4614,20 @@
             <a href="./README.md">README.md</a>
           </nav>
         </div>
-        <div class="panel panel-pad fade-up delay-1">
-          <p class="lead" style="font-size: 1.05rem; margin-top: 0;">Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act.</p>
-          <p class="lead" style="font-size: 1.05rem; margin-top: 14px;">Seeed Studio brings the ReSpeaker Flex, XIAO ESP32-S3, and circular four-microphone array together for responsive embodied voice AI.</p>
-          <div class="button-row">
-            <a class="button console-button" href="https://console.agora.io/">Agora Console</a>
-            <a class="button" href="https://www.seeedstudio.com/">Seeed Studio</a>
-            <a class="button" href="https://botstation.sg3.agoralab.co/">Bot Station</a>
+        <div class="panel panel-pad prep-info-panel fade-up delay-1">
+          <div class="prep-info-copy">
+            <p class="lead" style="font-size: 1.05rem; margin-top: 0;">Agora Physical AI connects AI systems to real-world devices so hardware can listen, speak, understand, and act.</p>
+            <p class="lead" style="font-size: 1.05rem; margin-top: 14px;">Seeed Studio brings the ReSpeaker Flex, XIAO ESP32-S3, and circular four-microphone array together for responsive embodied voice AI.</p>
+            <div class="button-row">
+              <a class="button console-button" href="https://console.agora.io/">Agora Console</a>
+              <a class="button" href="https://www.seeedstudio.com/">Seeed Studio</a>
+              <a class="button" href="https://botstation.sg3.agoralab.co/">Bot Station</a>
+            </div>
           </div>
+          <figure class="prep-discord-qr">
+            <img src="join-discord-agora-qr.jpg" alt="QR code to join the Agora Discord community">
+            <figcaption>Agora Discord</figcaption>
+          </figure>
         </div>
       </div>
     </section>

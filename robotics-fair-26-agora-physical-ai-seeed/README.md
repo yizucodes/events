@@ -209,7 +209,7 @@ See the [official ReSpeaker Flex firmware guide](https://wiki.seeedstudio.com/re
 1. Power off and on ReSpeaker Flex to start Wi-Fi configuration.
 2. Connect your computer to the Wi-Fi hotspot(Name starts with Agora-Convo) created by ReSpeaker Flex.
 3. Open `http://192.168.4.1/` if the configuration page does not open automatically.
-4. Wait for ReSpeaker Flex to connect to Wi-Fi.
+4. Choose the WIFI AP(NAME & password) and connect
 5. After Wi-Fi connects, press Boot / Pair to start pairing and listen for the spoken pairing code.
 6. Return to Bot Station and enter the spoken pairing code.
 7. Submit the form and wait for pairing to complete. The first conversation starts automatically after pairing.

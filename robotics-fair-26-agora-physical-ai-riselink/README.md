@@ -191,12 +191,13 @@ The deck also provides this command from the small **AI** button beside **Downlo
 ### Pair and Activate
 
 1. Press and hold Pair on the R1.
-2. Connect your computer to the Wi-Fi hotspot created by the R1.
+2. Connect your computer to the Wi-Fi hotspot(Name starts with AG-BK) created by the R1.
 3. Open `http://192.168.4.1/` if the configuration page does not open automatically.
-4. Return to Bot Station and copy the pairing code.
-5. Enter the pairing code on the R1 configuration page.
-6. Submit the form and wait for pairing to complete.
-7. Press Activate and begin a voice conversation.
+4. Choose the WIFI AP(NAME & password) and connect.
+5. Get the pairing code from configuration page or the display of R1.
+6. Enter the pairing code on the R1 configuration page.
+7. Submit the form and wait for pairing to complete.
+8. Press Activate and begin a voice conversation.
 
 ![Device pairing page](5-botstation-add-new-device-pair.png)
 
