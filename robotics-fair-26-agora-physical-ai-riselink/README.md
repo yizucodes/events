@@ -158,15 +158,6 @@ The [web flash tool](https://connect.aclsemi.com/download) runs in your browser.
 
 Download the dedicated GUI app or CLI from the [Beken flashing tools page](https://dl.bekencorp.com/tools/bkfil/v4) for a local flashing workflow.
 
-### Flash the Firmware
-
-1. Connect the R1 to your computer with the USB cable.
-2. Select the correct COM or serial port.
-3. Set the baud rate to `115200`.
-4. Select the R1 firmware image and start flashing.
-5. Press Reset when instructed.
-6. Wait for the flashing process to finish successfully.
-
 Confirm that the CLI is available:
 
 ```bash
@@ -188,6 +179,7 @@ bk_loader download \
 
 The deck also provides this command from the small **AI** button beside **Download required**, with a button for copying it.
 
+### Flash the Firmware
 
 1. Connect the R1 to your computer with the USB cable.
 2. Select the correct COM or serial port.
