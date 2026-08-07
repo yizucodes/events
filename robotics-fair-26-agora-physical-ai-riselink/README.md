@@ -129,7 +129,9 @@ Explain this workshop in one sentence.
 
 ## 5. Flash, Pair, and Run
 
-Open your bot in **My Bots**, choose **Add device**, then select one of the two flashing workflows.
+Open your bot in **My Bots**, choose **Add device**, pick and download the firmware for R1, then select one of the two flashing workflows.
+
+![Add a new device](5-botstation-add-new-device.png)
 
 ### Tooling Guidance
 
@@ -179,8 +181,6 @@ The deck also provides this command from the small **AI** button beside **Downlo
 4. Select the R1 firmware image and start flashing.
 5. Press Reset when instructed.
 6. Wait for the flashing process to finish successfully.
-
-![Add a new device](5-botstation-add-new-device.png)
 
 ### Pair and Activate
 
