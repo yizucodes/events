@@ -142,6 +142,10 @@ Open your bot in **My Bots**, choose **Add device**, then select one of the two 
 
 The [web flash tool](https://connect.aclsemi.com/download) runs in your browser. It does not require an app download or installation.
 
+![Connect device to flashtool](5-flashtool-web-choose-device.png)
+
+![Flash with web tool](5-flashtool-web-flash.png)
+
 ### Option B: Desktop Flasher
 
 Download the dedicated GUI app or CLI from the [Beken flashing tools page](https://dl.bekencorp.com/tools/bkfil/v4) for a local flashing workflow.
