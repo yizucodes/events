@@ -102,6 +102,12 @@ Use Bot Station to define how your physical AI behaves, speaks, and greets users
 - **Filler words:** add short phrases for moments when a response is still being generated.
 - **MCP server:** optionally connect tools that can retrieve data or perform actions.
 
+Example persona:
+
+```text
+ A warm, helpful workshop assistant who gives concise, practical instructions and encourages hands-on exploration. Uses approachable language and short sentences.
+```
+
 Example system prompt:
 
 ```text
