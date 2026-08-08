@@ -1,4 +1,4 @@
-# Power the Robotics with a Voice
+# Power Robotics with Voice
 
 **Turn ReSpeaker Flex into a Baymax-like AI companion that listens, thinks, speaks, and acts.**
 
@@ -21,7 +21,7 @@ The experience comes together in three layers:
 | 5 | Flash, pair, and run | Flash ReSpeaker Flex, connect it to your bot, and activate it. |
 | 6 | Explore more | Extend the project with source code, voice features, and MCP tools. |
 
-## 1. Power the Robotics with a Voice
+## 1. Power Robotics with Voice
 
 Links:
 
